@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/03/27 14:30:42 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/03/27 15:23:40 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	parse_mach_o_64(void *ptr)
 {
 	struct mach_header_64	*header;
 	struct load_command		*lc;
-	uint32_t				i;
+	uint32_t						i;
 
 	i = 0;
 	header = (struct mach_header_64*)ptr;
@@ -24,7 +24,7 @@ void	parse_mach_o_64(void *ptr)
 	while (i < header->ncmds && lc->cmd != LC_SYMTAB)
 		lc = (void*)lc + lc->cmdsize;
 	if (lc->cmd == LC_SYMTAB)
-		sort_symtab(ptr, (struct symtab_command*)lc);
+		sort_symtab_64(ptr, (struct symtab_command*)lc);
 	else
 		ft_putendl("NO SYMTAB FOUND"); //to delete
 }
