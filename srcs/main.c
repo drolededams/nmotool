@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:21:00 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/03/27 16:08:12 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/03/30 11:31:43 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		main(int ac, char **av)
 	i = 1;
 	if (ac < 2)
 		ft_putendl("usage : ft_nm + args");
-	while (i < ac)
+	while (i < ac)//print filename if plusieurs et a.out case
 		open_mmap(av[i++]);
 	return(1);
 }
