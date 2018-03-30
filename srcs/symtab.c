@@ -6,13 +6,13 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/03/29 20:01:09 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/03/30 19:33:48 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "nm.h"
 
-void	sort_symtab_64(void *ptr, struct symtab_command *sc)
+void	test_64(void *ptr, struct symtab_command *sc)
 {
 	uint32_t i;
 	uint32_t j;
@@ -80,8 +80,6 @@ void	sort_symtab_64(void *ptr, struct symtab_command *sc)
 				printf("add sect = %p\n", se);
 				printf("offset sect = %u\n", se->offset);
 			}
-
-
 		}
 		else if (lc->cmd == LC_SYMTAB)
 		{
