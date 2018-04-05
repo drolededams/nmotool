@@ -6,23 +6,23 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/03/30 19:33:48 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/05 18:13:26 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "nm.h"
+#include "ft_nm.h"
 
 void	test_64(void *ptr, struct symtab_command *sc)
 {
 	uint32_t i;
 	uint32_t j;
-	char *str;
-	struct nlist_64  *tab;
+	//char *str;
+	//struct nlist_64  *tab;
 	struct section_64			*se;
 	struct load_command		*lc;
 	struct mach_header_64		*header;
-	struct segment_command_64 *sct;
-
+	//struct segment_command_64 *sct;
+/*
 	tab = ptr + sc->symoff;
 	str = ptr + sc->stroff;
 	i = 0;
@@ -60,7 +60,10 @@ void	test_64(void *ptr, struct symtab_command *sc)
 			i++;
 		}
 	}
+	*/
+	sc = NULL;
 	i = 0;
+	header = (struct mach_header_64*)ptr;
 	lc = (void*)(header + 1);
 			printf("\n\n\nSEGMENTS\n\n");
 	while (i++ < header->ncmds)
@@ -70,6 +73,9 @@ void	test_64(void *ptr, struct symtab_command *sc)
 			printf("segname of the win %u  = %s\n", i - 1 , ((struct segment_command_64*)lc)->segname);
 			printf("add  = %p\n",  ((struct segment_command_64*)lc));
 			printf("size  = %u\n",  ((struct segment_command_64*)lc)->cmdsize);
+			printf("nsects  = %u\n",  ((struct segment_command_64*)lc)->nsects);
+			printf("**filesize**  = %llu\n",  ((struct segment_command_64*)lc)->filesize);
+			printf("**fileoff**  = %llu\n",  ((struct segment_command_64*)lc)->fileoff);
 			printf("nsects  = %u\n",  ((struct segment_command_64*)lc)->nsects);
 			j = 0;
 			while (j++ < ((struct segment_command_64*)lc)->nsects)
@@ -86,8 +92,8 @@ void	test_64(void *ptr, struct symtab_command *sc)
 			printf("segname of the win %u LC_SYMTAB\n", i - 1);
 			printf("add  = %p\n",  ((struct symtab_command*)lc));
 			printf("size  = %u\n",  ((struct symtab_command*)lc)->cmdsize);
-			printf("add_str  = %p\n",  str);
-			printf("add_tab  = %p\n",  tab);
+			//printf("add_str  = %p\n",  str);
+			//printf("add_tab  = %p\n",  tab);
 		}
 		else
 		{
@@ -121,4 +127,30 @@ void	print_type(void *ptr, uint8_t sect)
 		printf(" sizeof= %lu ", sizeof(struct section_64));
 		printf(" flags= %u ", se->flags & 127);
 	}
+}
+
+void	get_symtab_64(void *ptr, struct symtab_command *sc, char **sectnames)
+{
+	uint32_t i;
+	t_symbol_64 **stab;
+	char *str;
+	struct nlist_64  *tab;
+
+	tab = ptr + sc->symoff; //verifier offset
+	str = ptr + sc->stroff;//verifier iffset
+	if ((stab = alloc_symbol_64(sc->nsyms)))
+	{
+		i = 0;
+		while (i < sc->nsyms)
+		{
+			stab[i]->value = tab[i].n_value;
+			stab[i]->type = get_type(tab[i], sectnames);
+			stab[i]->name = str + tab[i].n_un.n_strx;
+			i++;
+		}
+		quicksort_64(stab, 1, sc->nsyms);
+		print_st64(stab);
+	}
+	else
+		ft_putendl("Allocation failed");
 }

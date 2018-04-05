@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   alloc.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/27 12:21:00 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/05 16:35:38 by dgameiro         ###   ########.fr       */
+/*   Created: 2018/04/05 16:13:53 by dgameiro          #+#    #+#             */
+/*   Updated: 2018/04/05 16:35:30 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-int		main(int ac, char **av)
+t_symbol_64 **alloc_symbol_64(uint32_t nsyms)
 {
-	int i;
+	t_symbol_64	**table;
+	uint32_t	i;
 
-	i = 1;
-	if (ac == 1)
-		open_mmap("a.out");
-	else if (ac == 2)
-		open_mmap(av[i]);
-	else
+	if (!(table = (t_symbol_64**)malloc(sizeof(t_symbol_64*) * (nsyms + 1))))
+		return (NULL);
+	i = 0;
+	while (i < nsyms)
 	{
-		while (i < ac)//print filename if plusieurs et a.out case
-			open_i_mmap(av[i++]);
+		if (!(table[i] = (t_symbol_64*)malloc(sizeof(t_symbol_64))))
+			return (NULL);
+		i++;
 	}
-	return(0);
+	table[i] = NULL;
+	return (table);
 }
