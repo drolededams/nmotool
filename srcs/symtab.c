@@ -6,64 +6,26 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/05 18:13:26 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/06 18:26:35 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	test_64(void *ptr, struct symtab_command *sc)
+void	test_64(void *ptr)
 {
 	uint32_t i;
 	uint32_t j;
-	//char *str;
-	//struct nlist_64  *tab;
 	struct section_64			*se;
 	struct load_command		*lc;
 	struct mach_header_64		*header;
-	//struct segment_command_64 *sct;
-/*
-	tab = ptr + sc->symoff;
-	str = ptr + sc->stroff;
-	i = 0;
-	while (i < sc->nsyms)
-	{
-		printf("ntype = %u ", tab[i].n_type & N_TYPE);
-		printf("sect = %u ", tab[i].n_sect);
-		if(tab[i].n_sect)
-			print_type(ptr, tab[i].n_sect);
-		printf("%u ",  tab[i].n_desc);
-		printf("%llu ", tab[i].n_value);
-		printf("%s\n", str + tab[i].n_un.n_strx);
-		i++;
-	}
+
 	i = 0;
 	header = (struct mach_header_64*)ptr;
-	lc = (void*)(header + 1);
-	printf("ncmds = %u\n", header->ncmds);
-	while (i++ < header->ncmds && lc->cmd != LC_SEGMENT_64)
-		lc = (void*)lc + lc->cmdsize;
-	i = 0;
-	if (lc->cmd == LC_SEGMENT_64)
-	{
-		sct = (struct segment_command_64*)lc;
-		printf("seggggname = %s\n", sct->segname);
-		printf("cmd = %u\n", sct->cmd);
-		printf("cmd f = %u\n", LC_SEGMENT_64);
-		printf(" sizeof segment_command_64= %lu\n", sizeof(struct segment_command_64));
-		printf(" size= %u\n", sct->cmdsize);
-		printf("nsects = %u\n",sct->nsects);
-		while (i < ((struct segment_command_64*)lc)->nsects)
-		{
-			se = (struct section_64*)((void*)sct + sizeof(struct segment_command_64) + (i - 1) * sizeof(struct section_64));
-			printf("sectname = %s\n", se->sectname);
-			i++;
-		}
-	}
-	*/
-	sc = NULL;
-	i = 0;
-	header = (struct mach_header_64*)ptr;
+	printf("magic == %u\n", header->magic);
+	printf("magic hex == %s\n", value_to_str_64(header->magic, "0123456789abcdef"));
+	printf("filetype == %u\n", header->filetype);
+	printf("filetype hex == %s\n", value_to_str_64(header->filetype, "0123456789abcdef"));
 	lc = (void*)(header + 1);
 			printf("\n\n\nSEGMENTS\n\n");
 	while (i++ < header->ncmds)
@@ -98,6 +60,8 @@ void	test_64(void *ptr, struct symtab_command *sc)
 		else
 		{
 			printf("segname of the win %u \n", i - 1);
+			printf("cmd  = %u\n",  lc->cmd);
+			printf("cmd hex  = %s\n",  value_to_str_64(lc->cmd, "0123456789abcdef"));
 			printf("add  = %p\n",  lc);
 			printf("size  = %u\n",  lc->cmdsize);
 		}
@@ -129,28 +93,52 @@ void	print_type(void *ptr, uint8_t sect)
 	}
 }
 
-void	get_symtab_64(void *ptr, struct symtab_command *sc, char **sectnames)
+uint32_t symtab_lenght_64(struct nlist_64 *tab, struct symtab_command *sc)
+{
+	uint32_t length;
+	uint32_t i;
+
+	length = 0;
+	i = 0;
+	while (i < sc->nsyms)
+	{
+		if(!(tab[i].n_type & N_STAB))
+			length++;
+		i++;
+	}
+	return (length);
+}
+
+void	get_symtab_64(t_data *data, struct symtab_command *sc, char **sectnames)
 {
 	uint32_t i;
+	uint32_t j;
+	uint32_t length;
 	t_symbol_64 **stab;
 	char *str;
 	struct nlist_64  *tab;
 
-	tab = ptr + sc->symoff; //verifier offset
-	str = ptr + sc->stroff;//verifier iffset
-	if ((stab = alloc_symbol_64(sc->nsyms)))
+	tab = data->ptr + sc->symoff; //verifier offset
+	str = data->ptr + sc->stroff;//verifier iffset
+	length = symtab_lenght_64(tab, sc);
+	if ((stab = alloc_symbol_64(length))) //non moins
 	{
 		i = 0;
+		j = 0;
 		while (i < sc->nsyms)
 		{
-			stab[i]->value = tab[i].n_value;
-			stab[i]->type = get_type(tab[i], sectnames);
-			stab[i]->name = str + tab[i].n_un.n_strx;
+			if(!(tab[i].n_type & N_STAB))
+			{
+				stab[j]->value = tab[i].n_value;
+				stab[j]->type = get_type(tab[i], sectnames);
+				stab[j]->name = str + tab[i].n_un.n_strx;
+				j++;
+			}
 			i++;
 		}
-		quicksort_64(stab, 1, sc->nsyms);
+		quicksort_64(stab, 1, length);
 		print_st64(stab);
 	}
 	else
-		ft_putendl("Allocation failed");
+		ft_putendl("stab allocation failed");
 }
