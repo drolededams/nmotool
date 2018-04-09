@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:28:59 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/06 17:54:03 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/09 15:57:53 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	open_mmap(char *file, int multi, t_data *data)
 	struct stat	buf;
 
 	data->filename = ft_strdup(file);
+	data->swap = 0;
 	if ((fd = open(file, O_RDONLY)) < 0)
 		error_i_file(file, fd); //a voir directory etc..
 	else if (fstat(fd, &buf) == -1)

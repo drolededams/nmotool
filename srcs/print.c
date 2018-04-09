@@ -6,13 +6,13 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/06 10:26:53 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/09 11:48:45 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	print_st64(t_symbol_64 **stab)
+void	print_st(t_symbol_64 **stab, int length)
 {
 	int i;
 	char *s;
@@ -23,10 +23,15 @@ void	print_st64(t_symbol_64 **stab)
 		if (ft_strcmp(stab[i]->name, "radr://5614542"))
 		{
 			if (stab[i]->type == 'U')
-				printf("                 ");
+			{
+				if (length == 16)
+					printf("                 ");
+				else
+					printf("         ");
+			}
 			else
 			{
-				s = value_to_str_64(stab[i]->value, "0123456789abcdef");
+				s = value_to_str(stab[i]->value, "0123456789abcdef", length);
 				printf("%s ", s);
 				free(s);
 			}
@@ -37,13 +42,11 @@ void	print_st64(t_symbol_64 **stab)
 	}
 }
 
-char		*value_to_str_64(uint64_t value, char *hex)
+char		*value_to_str(uint64_t value, char *hex, int i)
 {
 	char		*str;
-	int			i;
-	uint64_t	r;
+	uint32_t	r;
 
-	i = 16;
 	if (!(str = (char*)malloc(sizeof(char) * (i + 1))))
 		ft_putendl("Probleme allocation");
 	str[i] = '\0';
