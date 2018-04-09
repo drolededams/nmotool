@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 17:45:05 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/09 18:24:00 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct	s_data
 	uint32_t	offset;
 	int			libstatic;
 	int			swap;
+	int			fat;
 }				t_data;
 
 void	test_64(void *ptr);
@@ -68,4 +69,5 @@ unsigned long	to_swap(unsigned long value, t_data *data);
 unsigned long	swap_bit(unsigned long value);
 int				swap_cpu(int value, t_data *data);
 void			fat_process(struct fat_header *header, t_data *data);
+void		print_arch(t_data *data);
 #endif

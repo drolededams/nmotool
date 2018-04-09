@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:02:47 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/09 18:09:01 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	nm_process(t_data *data)
 {
 	data->offset = 0;
+	data->fat = 0;
 	mach_o_process(data);
 }
 
@@ -79,6 +80,7 @@ void fat_process(struct fat_header *header, t_data *data)
 
 	i = 0;
 	data->swap = 0;
+	data->fat = 1;
 	if (header->magic == FAT_CIGAM)
 		data->swap = 1;
 	fa = (void*)(header + 1);
@@ -98,6 +100,7 @@ void fat_process(struct fat_header *header, t_data *data)
 			data->swap = 1;
 		i++;
 	}
+	data->fat = 0;
 }
 
 unsigned long	to_swap(unsigned long value, t_data *data)
