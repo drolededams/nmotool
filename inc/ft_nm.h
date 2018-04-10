@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:24:00 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/10 14:22:13 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,5 @@ unsigned long	swap_bit(unsigned long value);
 int				swap_cpu(int value, t_data *data);
 void			fat_process(struct fat_header *header, t_data *data);
 void		print_arch(t_data *data);
+int			is_static(t_data *data);
 #endif

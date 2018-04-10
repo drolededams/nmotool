@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:09:01 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/10 17:06:14 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,36 @@
 
 void	nm_process(t_data *data)
 {
-	data->offset = 0;
-	data->fat = 0;
-	mach_o_process(data);
+	if (is_static_lib(data))
+		static_lib_process(data);
+	else
+		mach_o_process(data);
+}
+
+void	static_lib_process(t_data *data)
+{
+	if (header_lib_check(data))
+	{
+		
+	}
+	ft_putendl("Bad header lib");
+}
+
+int		header_lib_check(t_data *data)
+{
+	if (data->filesize <= data->offset + 68)
+	{
+		if ((char)(data->ptr + data->offset + 66) == '`' && (char)(data->ptr + data->offset + 67) == '\n')
+			return (1);
+	}
+	return (0);
+}
+
+int		is_static(t_data *data)
+{
+	if (data->filesize >= 8 + data->offset && ft_strncmp(data->ptr, "!<arch>\n", 8) == 0)
+		return (1);
+	return (0);
 }
 
 void	mach_o_process(t_data *data)
