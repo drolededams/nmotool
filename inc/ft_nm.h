@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/10 14:22:13 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/11 19:15:02 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct	s_symbol_64
 	uint64_t	value;
 	char		type;
 	char		*name;
+	char		*object;
 }				t_symbol_64;
 
 typedef struct	s_data
@@ -35,10 +36,10 @@ typedef struct	s_data
 	void		*ptr;
 	size_t		filesize;
 	char		*filename;
-	uint32_t	offset;
+	size_t		offset;
 	int			libstatic;
 	int			swap;
-	int			fat;
+	uint32_t	fat;
 }				t_data;
 
 void	test_64(void *ptr);
@@ -71,4 +72,11 @@ int				swap_cpu(int value, t_data *data);
 void			fat_process(struct fat_header *header, t_data *data);
 void		print_arch(t_data *data);
 int			is_static(t_data *data);
+void		static_lib_process(t_data *data);
+int			header_lib_check(t_data *data);
+size_t		filename_lenght(t_data *data);
+size_t		get_filesize(t_data *data);
+int		offset_check(t_data *data, size_t size);
+void	parse_lib(t_data *data);
+void	parse_lib_64(t_data *data);
 #endif

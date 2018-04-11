@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:48:52 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/11 19:19:01 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,22 @@ void		print_arch(t_data *data)
 	cpu_type_t cpu;
 
 	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype, data);
-	ft_putchar('\n');
-	ft_putstr(data->filename);
-	ft_putchar(' ');
-	ft_putstr("(for architecture ");
-	if (cpu == CPU_TYPE_POWERPC)
-		ft_putendl("ppc):");
-	else if (cpu == CPU_TYPE_I386)
-		ft_putendl("i386):");
+	if (data->fat > 1)
+	{
+		ft_putchar('\n');
+		ft_putstr(data->filename);
+		ft_putchar(' ');
+		ft_putstr("(for architecture ");
+		if (cpu == CPU_TYPE_POWERPC)
+			ft_putendl("ppc):");
+		else if (cpu == CPU_TYPE_I386)
+			ft_putendl("i386):");
+	}
+	else
+	{
+		ft_putstr(data->filename);
+		ft_putendl(":");
+	}
 }
 
 char		*value_to_str(uint64_t value, char *hex, int i)

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:28:59 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/10 11:33:37 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/11 11:31:08 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	open_mmap(char *file, int multi, t_data *data)
 			ft_putstr(file);
 			ft_putstr(":\n");
 		}
-		nm_process(data);
 		data->offset = 0;
 		data->fat = 0;
+		nm_process(data);
 		if (munmap(data->ptr, buf.st_size) == -1)// a voir
 			error_file("munmap fail on", file, fd);
 	}
