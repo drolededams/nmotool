@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:20:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 11:35:47 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/11 19:33:38 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ char	get_type_64(struct nlist_64 nl, char **sectnames)
 		return ('U' + lower);
 	if ((nl.n_type & N_TYPE) == N_ABS)
 		return ('A' + lower);
+	if ((nl.n_type & N_TYPE) == N_INDR)
+		return ('I' + lower);
 	if ((nl.n_type & N_TYPE) == N_SECT)
 		return (get_sect(nl.n_sect - 1, sectnames, lower));
 	return (' ');
