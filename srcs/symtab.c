@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 13:59:07 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 16:50:03 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,29 +53,34 @@ void	get_symtab_64(t_data *data, struct symtab_command *sc, char **sectnames)
 	char *str;
 	struct nlist_64  *tab;
 
-	tab = data->ptr + data->offset + sc->symoff; //verifier offset
-	str = data->ptr + data->offset + sc->stroff;//verifier iffset
-	length = symtab_lenght_64(tab, sc);
-	if ((stab = alloc_symbol_64(length))) //non moins
+	if (!data->error && offset_check(data, sc->symoff))
+		tab = data->ptr + data->offset + sc->symoff; 
+	if (!data->error && offset_check(data, sc->stroff))
+		str = data->ptr + data->offset + sc->stroff;
+	if (!data->error)
 	{
-		i = 0;
-		j = 0;
-		while (i < sc->nsyms)
+		length = symtab_lenght_64(tab, sc);
+		if ((stab = alloc_symbol_64(length)))
 		{
-			if(!(tab[i].n_type & N_STAB))
+			i = 0;
+			j = 0;
+			while (i < sc->nsyms)
 			{
-				stab[j]->value = tab[i].n_value;
-				stab[j]->type = get_type_64(tab[i], sectnames);
-				stab[j]->name = str + tab[i].n_un.n_strx;
-				j++;
+				if(!(tab[i].n_type & N_STAB))
+				{
+					stab[j]->value = tab[i].n_value;
+					stab[j]->type = get_type_64(tab[i], sectnames);
+					stab[j]->name = str + tab[i].n_un.n_strx;
+					j++;
+				}
+				i++;
 			}
-			i++;
+			quicksort_64(stab, 1, length);
+			print_st(stab, 16);
 		}
-		quicksort_64(stab, 1, length);
-		print_st(stab, 16);
+		else
+			ft_putendl("stab allocation failed");
 	}
-	else
-		ft_putendl("stab allocation failed");
 }
 
 void	get_symtab_32(t_data *data, struct symtab_command *sc, char **sectnames)

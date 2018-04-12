@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 13:50:32 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 16:44:53 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,32 @@ void		parse_mach_o_64(t_data *data)
 	struct mach_header_64	*header;
 	struct load_command		*lc;
 	uint32_t				i;
+	uint32_t				total_offset;
 	char					**sectnames;
 
 	i = 0;
-	header = (struct mach_header_64*)(data->ptr + data->offset);
-	lc = (void*)(header + 1);
-	sectnames = get_sectnames_64(lc, header->ncmds);
-	while (i++ < header->ncmds && lc->cmd != LC_SYMTAB)
+	if ((data->error = offset_check(data, sizeof(struct mach_header_64))))
 	{
-		if (lc->cmdsize % 8 != 0)//cas a gerer par un break ou autre + propre
-			ft_putendl("not a multiple of 8");
-		lc = (void*)lc + lc->cmdsize;
-	}
-	if (lc->cmd == LC_SYMTAB)
-	{
-		get_symtab_64(data, (struct symtab_command*)lc, sectnames);
+		total_offset = sizeof(struct mach_header_64);
+		header = (struct mach_header_64*)(data->ptr + data->offset);
+		if ((data->error = offset_check(data, total_offset + sizeof(struct load_command))))
+		{
+			total_offset += sizeof(struct load_command);
+			lc = (void*)(header + 1);
+			sectnames = get_sectnames_64(lc, header->ncmds);
+			while (i++ < header->ncmds && !data->error && lc->cmd != LC_SYMTAB)
+			{
+				if (lc->cmdsize % 8 != 0)
+					data->error = 2;
+				if (offset_check(data, total_offset + sizeof(load_command) + lc->cmdsize))
+				{
+					total_offset += lc->cmdsize;
+					lc = (void*)lc + lc->cmdsize;
+				}
+			}
+			if (!data->error && lc->cmd == LC_SYMTAB)
+				get_symtab_64(data, (struct symtab_command*)lc, sectnames);
+		}
 	}
 }
 

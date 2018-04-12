@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:28:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:01:10 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 16:35:10 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,25 @@ char		**get_sectnames_64(struct load_command *lc, uint32_t ncmds)
 	struct load_command	*cur;
 	struct section_64	*section;
 	char				**sectnames;
+	uint32_t total_offset;
 
 	i = 0;
 	k = 0;
 	nsects = 0;
 	cur = lc;
-	while (i++ < ncmds)
+	total_offset = sizeof(struct mach_header_64);
+	while (i++ < ncmds && !data->error)
 	{
-		if (cur->cmd == LC_SEGMENT_64)
+		if (cur->cmd == LC_SEGMENT_64 && offset_check(data, total_offset + sizeof(struct segment_command_64)))
 			nsects += ((struct segment_command_64*)cur)->nsects;
-		cur = (void*)cur + cur->cmdsize;
+		if (offset_check(data, total_offset + cur->cmdsize + sizeof(struct load_command)))
+		{
+			total_offset += cur->cmdsize;
+			cur = (void*)cur + cur->cmdsize;
+		}
 	}
-	if ((sectnames = (char**)malloc(sizeof(char*) * nsects - 1)) != NULL)
+	total_offset = sizeof(struct mach_header_64);
+	if ((sectnames = (char**)malloc(sizeof(char*) * nsects - 1)) != NULL && !data->error)
 	{
 		i = 0;
 		while (i < ncmds)
@@ -40,14 +47,18 @@ char		**get_sectnames_64(struct load_command *lc, uint32_t ncmds)
 			if (lc->cmd == LC_SEGMENT_64)
 			{
 				j = 0;
-				while (j++ < ((struct segment_command_64*)lc)->nsects)
+				while (j++ < ((struct segment_command_64*)lc)->nsects && !data->error)
 				{
-					section = (struct section_64*)((void*)lc + sizeof(struct segment_command_64) + (j - 1) * sizeof(struct section_64));
-					sectnames[k] = section->sectname;
-					k++;
+					if (offset_check(data, total_offset + sizeof(struct segment_command_64 + (j - 1) * sizeof(struct section_64))))
+					{
+						section = (struct section_64*)((void*)lc + sizeof(struct segment_command_64) + (j - 1) * sizeof(struct section_64));
+						sectnames[k] = section->sectname;
+						k++;
+					}
 				}
 			}
 			i++;
+			total_offset += lc->cmdsize;
 			lc = (void*)lc + lc->cmdsize;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 13:56:51 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 16:50:56 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ void	nm_process(t_data *data)
 int		offset_check(t_data *data, size_t size)
 {
 	if (data->offset + size < data->filesize)
+	{
+		data->error = 0;
 		return (1);
+	}
+	data->error = 1;
 	return (0);
 }
 
@@ -31,16 +35,19 @@ void	mach_o_process(t_data *data)
 {
 	uint32_t magic;
 
-	magic = *(uint32_t*)(data->ptr + data->offset);
-	if (magic == MH_MAGIC_64 || magic == MH_CIGAM_64)
-		parse_mach_o_64(data);
-	else if (magic == MH_MAGIC || magic == MH_CIGAM)
-		parse_mach_o_32(data);
-	else if (magic == FAT_MAGIC || magic == FAT_CIGAM)
-		parse_fat(data);
+	if ((data->error = offset_check(data, sizeof(uint32_t))))
+	{
+		magic = *(uint32_t*)(data->ptr + data->offset);
+		if (magic == MH_MAGIC_64 || magic == MH_CIGAM_64)
+			parse_mach_o_64(data);
+		else if (magic == MH_MAGIC || magic == MH_CIGAM)
+			parse_mach_o_32(data);
+		else if (magic == FAT_MAGIC || magic == FAT_CIGAM)
+			parse_fat(data);
+	}
 }
 
-void fat_process(struct fat_header *header, t_data *data)
+void	fat_process(struct fat_header *header, t_data *data)
 {
 	struct fat_arch		*fa;
 	size_t				total_offset;
