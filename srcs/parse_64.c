@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 16:44:53 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 20:12:06 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,20 @@ void		parse_mach_o_64(t_data *data)
 	char					**sectnames;
 
 	i = 0;
-	if ((data->error = offset_check(data, sizeof(struct mach_header_64))))
+	if (offset_check(data, sizeof(struct mach_header_64)))
 	{
 		total_offset = sizeof(struct mach_header_64);
 		header = (struct mach_header_64*)(data->ptr + data->offset);
-		if ((data->error = offset_check(data, total_offset + sizeof(struct load_command))))
+		if (offset_check(data, total_offset + sizeof(struct load_command)))
 		{
 			total_offset += sizeof(struct load_command);
 			lc = (void*)(header + 1);
-			sectnames = get_sectnames_64(lc, header->ncmds);
+			sectnames = get_sectnames_64(data, lc, header->ncmds);
 			while (i++ < header->ncmds && !data->error && lc->cmd != LC_SYMTAB)
 			{
 				if (lc->cmdsize % 8 != 0)
 					data->error = 2;
-				if (offset_check(data, total_offset + sizeof(load_command) + lc->cmdsize))
+				if (!data->error && offset_check(data, total_offset + sizeof(struct load_command) + lc->cmdsize))
 				{
 					total_offset += lc->cmdsize;
 					lc = (void*)lc + lc->cmdsize;
@@ -57,6 +57,7 @@ void		parse_mach_o_32(t_data *data)
 	i = 0;
 	magic = *(uint32_t*)(data->ptr + data->offset);
 	data->swap = 0;
+	data->is_64 = 0;
 	if (magic == MH_CIGAM)
 		data->swap = 1;
 	header = (struct mach_header*)(data->ptr + data->offset);
@@ -216,7 +217,6 @@ void		parse_fat(t_data *data)
 			if (to_swap(fa->cputype, data) == CPU_TYPE_X86_64)//toujours premier ?
 			{
 				data->offset = to_swap(fa->offset, data);
-				//mach_o_process(data);
 				nm_process(data);
 			}
 			else

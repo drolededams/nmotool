@@ -6,17 +6,23 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/11 19:19:01 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 19:07:46 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	print_st(t_symbol_64 **stab, int length)
+void	print_st(t_data *data, t_symbol_64 **stab, int length)
 {
 	int i;
 	char *s;
 
+	if (data->multi)
+	{
+		ft_putchar('\n');
+		ft_putstr(data->filename);
+		ft_putstr(":\n");
+	}//sauf quand fat ??
 	i = 0;
 	while (stab[i])
 	{

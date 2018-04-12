@@ -6,13 +6,13 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:28:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 16:35:10 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 18:42:03 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-char		**get_sectnames_64(struct load_command *lc, uint32_t ncmds)
+char		**get_sectnames_64(t_data *data, struct load_command *lc, uint32_t ncmds)
 {
 	uint32_t			i;
 	uint32_t			j;
@@ -49,7 +49,7 @@ char		**get_sectnames_64(struct load_command *lc, uint32_t ncmds)
 				j = 0;
 				while (j++ < ((struct segment_command_64*)lc)->nsects && !data->error)
 				{
-					if (offset_check(data, total_offset + sizeof(struct segment_command_64 + (j - 1) * sizeof(struct section_64))))
+					if (offset_check(data, total_offset + sizeof(struct segment_command_64) + (j - 1) * sizeof(struct section_64)))
 					{
 						section = (struct section_64*)((void*)lc + sizeof(struct segment_command_64) + (j - 1) * sizeof(struct section_64));
 						sectnames[k] = section->sectname;

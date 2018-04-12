@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:21:00 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 16:54:16 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 18:19:08 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ int		main(int ac, char **av)
 			while (i < ac)//print filename if plusieurs et a.out case
 			{
 				data->error = open_mmap(av[i++], 1, data);
-				if (!data->error)
+				if (data->error && data->error != 3)
 					put_error(data);
 			}
+			data->error = 0;
 		}
 	}
 	else
@@ -39,5 +40,7 @@ int		main(int ac, char **av)
 		ft_putendl("malloc struct data failed");
 		return(0);
 	}
+	if (data->error && data->error != 3)
+		return(put_error(data));
 	return(0);
 }

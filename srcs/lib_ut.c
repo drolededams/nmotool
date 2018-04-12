@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/12 13:51:11 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 15:43:34 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 19:53:27 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ size_t		get_filesize(t_data *data)
 
 int		is_static(t_data *data)
 {
-	if ((data->error = offset_check (data, 8)) && ft_strnequ(data->ptr + data->offset, "!<arch>\n", 8))
+	if ((offset_check (data, 8)) && ft_strnequ(data->ptr + data->offset, "!<arch>\n", 8))
 	{
 		data->offset += 8;
 		return (1);

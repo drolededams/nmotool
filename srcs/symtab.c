@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 16:50:03 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 18:47:40 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	get_symtab_64(t_data *data, struct symtab_command *sc, char **sectnames)
 				i++;
 			}
 			quicksort_64(stab, 1, length);
-			print_st(stab, 16);
+			print_st(data, stab, 16);
 		}
 		else
 			ft_putendl("stab allocation failed");
@@ -113,7 +113,7 @@ void	get_symtab_32(t_data *data, struct symtab_command *sc, char **sectnames)
 		quicksort_64(stab, 1, length);
 		if (data->fat)
 			print_arch(data);
-		print_st(stab, 8);
+		print_st(data, stab, 8);
 	}
 	else
 		ft_putendl("stab allocation failed");
