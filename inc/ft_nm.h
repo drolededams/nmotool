@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/11 19:15:02 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 14:27:47 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,11 @@ typedef struct	s_data
 	uint32_t	fat;
 }				t_data;
 
-void	test_64(void *ptr);
 void		open_mmap(char *file, int multi, t_data *data);
 void		error_file(char *str, char*file, int fd);
 void		nm_process(t_data *data);
 void		mach_o_process(t_data *data);
 void		parse_mach_o_64(t_data *data);
-void		print_type(void *ptr, uint8_t sect);
 char		**get_sectnames_64(struct load_command *lc, uint32_t ncmds);
 void		get_symtab_64(t_data *data, struct symtab_command *sc, char **sectnames);
 void		print_st(t_symbol_64 **stab, int length);

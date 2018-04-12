@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:20:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/11 19:33:38 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 14:00:11 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ char	get_sect(uint8_t n_sect, char **sectnames, char lower)
 			return ('D' + lower);
 	if (!(ft_strcmp(sectnames[n_sect], "__bss")))
 			return ('B' + lower);
-	if (!(ft_strcmp(sectnames[n_sect], "__picsymbol_stub")))
+	if (!(ft_strcmp(sectnames[n_sect], "__picsymbol_stub"))) //sure ??
 			return ('I' + lower);
-	if (!(ft_strcmp(sectnames[n_sect], "__symbol_stub")))
+	if (!(ft_strcmp(sectnames[n_sect], "__symbol_stub"))) //sure ?? I deja geré ?
 			return ('I' + lower);
 	return ('S' + lower);
 }

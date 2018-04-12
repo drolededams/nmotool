@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/09 18:03:11 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/12 13:50:32 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,156 @@ void		parse_mach_o_32(t_data *data)
 	if (to_swap(lc->cmd, data) == LC_SYMTAB)
 	{
 		get_symtab_32(data, (struct symtab_command*)lc, sectnames);
+	}
+}
+
+void	parse_lib(t_data *data)
+{
+	uint32_t	n_objs;
+	uint32_t	i;
+	uint32_t	filesize;
+	size_t		len;
+	char		*filename;
+
+	n_objs = 0;
+	i = 0;
+	if(!(filesize = get_filesize(data)))
+		ft_putendl("error parse_lib filesize");
+	if ((len = filename_lenght(data)))
+		data->offset += 60 + len;
+	if (offset_check(data, sizeof(uint32_t)))
+	{
+		n_objs = *(uint32_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
+	}
+	if (offset_check(data, filesize - len))
+		data->offset += filesize - len;
+	if (n_objs)
+	{
+		while (i < n_objs)
+		{
+			if ((len = filename_lenght(data)))
+			{
+				if (offset_check(data, 60))
+				{
+					if(!(filesize = get_filesize(data)))
+						ft_putendl("error parse_lib filesize");
+				}
+				else
+					ft_putendl("error parse_lib offset_check");
+				data->offset += 60;
+				if (offset_check(data, len))
+				{
+					filename = ft_strnew(len);
+					ft_strncpy(filename, data->ptr + data->offset, len);
+					ft_putchar('\n');
+					ft_putstr(data->filename);
+					ft_putchar('(');
+					ft_putstr(filename);
+					ft_putendl("):");
+					ft_memdel((void**)&filename);
+					data->offset += len;
+					nm_process(data);
+					if (offset_check(data, filesize - len))
+						data->offset += filesize - len;
+				}
+				else
+					ft_putendl("error parse_lib offset_check");
+			}
+			//else
+			//	ft_putendl("error parse_lib filename_lenght");
+			//	marche sans else mais pourquoi ? dangerueux ? 
+			i++;
+		}
+	}
+	else
+	{
+		while ((len = filename_lenght(data)))
+		{
+			if (offset_check(data, 60))
+			{
+				if(!(filesize = get_filesize(data)))
+					ft_putendl("error parse_lib filesize");
+			}
+			else
+				ft_putendl("error parse_lib offset_check");
+			data->offset += 60;
+			if (offset_check(data, len))
+			{
+				filename = ft_strnew(len);
+				ft_strncpy(filename, data->ptr + data->offset, len);
+				ft_putchar('\n');
+				ft_putstr(data->filename);
+				ft_putchar('(');
+				ft_putstr(filename);
+				ft_putendl("):");
+				ft_memdel((void**)&filename);
+				data->offset += len;
+				nm_process(data);
+				if (offset_check(data, filesize - len))
+					data->offset += filesize - len;
+			}
+			else
+				ft_putendl("error parse_lib offset_check");
+		}
+	}
+}
+
+void	parse_lib_64(t_data *data)
+{
+	uint64_t	n_objs;
+	uint64_t	i;
+	size_t		len;
+
+	n_objs = 0;
+	i = 0;
+	if ((len = filename_lenght(data)))
+		data->offset += 60 + len;
+	if (offset_check(data, sizeof(uint64_t)))
+	{
+		n_objs = *(uint64_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
+		data->offset += *(uint64_t*)(data->ptr + data->offset);
+	}
+	if (offset_check(data, sizeof(uint64_t)))
+		data->offset += *(uint64_t*)(data->ptr + data->offset);
+}
+
+void		parse_fat(t_data *data)
+{
+	struct fat_header	*header;
+	struct fat_arch		*fa;
+	size_t				total_offset;
+	unsigned long			i;
+	uint32_t			magic;
+
+	magic = *(uint32_t*)(data->ptr + data->offset);
+	if (magic == FAT_CIGAM)
+		data->swap = 1;
+	if (sizeof(struct fat_header) <= data->filesize)
+	{
+		header = (struct fat_header*)data->ptr;
+		if ((sizeof(struct fat_header) + sizeof(struct fat_arch)) <= data->filesize)
+		{
+			i = 0;
+			fa = (void*)(header + 1);
+			data->offset = to_swap(fa->offset, data);
+			total_offset = sizeof(struct fat_header);
+			while(i < to_swap(header->nfat_arch, data) && (cpu_type_t)(to_swap(fa->cputype, data)) != CPU_TYPE_X86_64)
+			{
+				if (total_offset + sizeof(struct fat_arch) <= data->filesize)
+				{
+					fa = (void*)fa + sizeof(struct fat_arch);
+					total_offset += sizeof(struct fat_arch);
+				}
+				i++;
+			}
+			if (to_swap(fa->cputype, data) == CPU_TYPE_X86_64)//toujours premier ?
+			{
+				data->offset = to_swap(fa->offset, data);
+				//mach_o_process(data);
+				nm_process(data);
+			}
+			else
+				fat_process(header, data);
+		}
 	}
 }
