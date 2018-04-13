@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 20:12:06 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 11:30:53 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,8 +214,9 @@ void		parse_fat(t_data *data)
 				}
 				i++;
 			}
-			if (to_swap(fa->cputype, data) == CPU_TYPE_X86_64)//toujours premier ?
+			if (to_swap(fa->cputype, data) == CPU_TYPE_X86_64)
 			{
+				data->fat64 = 1;
 				data->offset = to_swap(fa->offset, data);
 				nm_process(data);
 			}
