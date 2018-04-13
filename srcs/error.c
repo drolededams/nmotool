@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:55:30 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 17:55:17 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 12:49:02 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 uint32_t		error_file(char *str, t_data *data, int fd)
 {
-	ft_putstr(str);
-	ft_putchar(' ');
-	ft_putendl(data->filename);
+	ft_putstr_fd(str, STDERR_FILENO);
+	ft_putchar_fd(' ', STDERR_FILENO);
+	ft_putendl_fd(data->filename, STDERR_FILENO);
 	if (fd >= 0)
 		close(fd);
 	if (ft_strequ("munmap fail on", str))
@@ -26,9 +26,9 @@ uint32_t		error_file(char *str, t_data *data, int fd)
 
 uint32_t		error_i_file(t_data *data, int fd)
 {
-	ft_putstr("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ");
-	ft_putstr(data->filename);
-	ft_putendl(": No such file or directory.");
+	ft_putstr_fd("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ", STDERR_FILENO);
+	ft_putstr_fd(data->filename, STDERR_FILENO);
+	ft_putendl_fd(": No such file or directory.", STDERR_FILENO);
 	if (fd >= 0)
 		close(fd);
 	return (3);
@@ -36,9 +36,9 @@ uint32_t		error_i_file(t_data *data, int fd)
 
 uint32_t		error_directory(t_data *data, int fd)
 {
-	ft_putstr("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ");
-	ft_putstr(data->filename);
-	ft_putendl(": Is a directory.");
+	ft_putstr_fd("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ", STDERR_FILENO);
+	ft_putstr_fd(data->filename, STDERR_FILENO);
+	ft_putendl_fd(": Is a directory.", STDERR_FILENO);
 	if (fd >= 0)
 		close(fd);
 	return (3);
@@ -46,14 +46,14 @@ uint32_t		error_directory(t_data *data, int fd)
 
 int		put_error(t_data *data)
 {
-	ft_putstr("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ");
-	ft_putstr(data->filename);
+	ft_putstr_fd("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ", STDERR_FILENO);
+	ft_putstr_fd(data->filename, STDERR_FILENO);
 	if (data->error == 1)
-		ft_putendl(" truncated or malformed object (load command 2 fileoff field plus filesize field in LC_SEGMENT_64 extends past the end of the file)");
+		ft_putendl_fd(" truncated or malformed object (past the end of the file)", STDERR_FILENO);
 	else if (data->error == 2)
-		ft_putendl(" truncated or malformed object (load command 0 cmdsize not a multiple of 8)");
+		ft_putendl_fd(" truncated or malformed object (not a multiple of 8)", STDERR_FILENO);
 	else if (data->error == 4)
-		ft_putendl(" The file was not recognized as a valid object file");
-	ft_putchar('\n');
+		ft_putendl_fd(" The file was not recognized as a valid object file", STDERR_FILENO);
+	ft_putchar_fd('\n', STDERR_FILENO);
 	return (1);
 }

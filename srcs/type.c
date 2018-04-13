@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:20:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 18:47:27 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 12:06:19 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ char	get_type_64(struct nlist_64 nl, char **sectnames)
 	lower = 0;
 	if (!(nl.n_type & N_EXT))
 		lower = 32;
-	//if ((nl.n_type & N_EXT) && ((nl.n_type & N_TYPE) == N_UNDF))
-	//	return ('C'); MH_OBJECT ONLY ??
+	if ((nl.n_type & N_EXT) && ((nl.n_type & N_TYPE) == N_UNDF) && (nl.n_type & N_PEXT))
+		return ('C' + lower);// MH_OBJECT ONLY ??
 	if ((nl.n_type & N_TYPE) == N_UNDF)//N_ext set or not to lower ?
 		return ('U' + lower);
 	if ((nl.n_type & N_TYPE) == N_ABS)
@@ -56,10 +56,14 @@ char	get_type_32(struct nlist nl, char **sectnames)
 		lower = 32;
 	//if ((nl.n_type & N_EXT) && ((nl.n_type & N_TYPE) == N_UNDF))
 	//	return ('C'); MH_OBJECT ONLY ??
+	if ((nl.n_type & N_EXT) && ((nl.n_type & N_TYPE) == N_UNDF) && (nl.n_type & N_PEXT))
+		return ('C' + lower);// MH_OBJECT ONLY ??
 	if ((nl.n_type & N_TYPE) == N_UNDF)//N_ext set or not to lower ?
 		return ('U' + lower);
 	if ((nl.n_type & N_TYPE) == N_ABS)
 		return ('A' + lower);
+	if ((nl.n_type & N_TYPE) == N_INDR)
+		return ('I' + lower);
 	if ((nl.n_type & N_TYPE) == N_SECT)
 		return (get_sect(nl.n_sect - 1, sectnames, lower));
 	return (' ');

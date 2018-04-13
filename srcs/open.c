@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:28:59 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 11:31:12 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 12:46:40 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ uint32_t		open_mmap(char *file, int multi, t_data *data)
 	data->multi = multi;
 	data->is_64 = 1;
 	data->fat64 = 0;
+	data->libstatic = 0;
 	if ((fd = open(file, O_RDONLY)) < 0)
 		return(error_i_file(data, fd));
 	else if (fstat(fd, &buf) == -1)

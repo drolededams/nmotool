@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/12 13:51:11 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 19:53:27 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 12:46:10 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,14 @@ void	static_lib_process(t_data *data)
 {
 	if (header_lib_check(data))
 	{
+		data->libstatic = 1;
 		if (ft_strnequ(data->ptr + data->offset + 60, SYMDEF_64, ft_strlen(SYMDEF_64)))
 			parse_lib_64(data);
 		else if (ft_strnequ(data->ptr + data->offset + 60, SYMDEF, ft_strlen(SYMDEF)))
 			parse_lib(data);
 	}
 	else
-		ft_putendl("Bad header lib");
+		ft_putendl_fd("Bad header lib", STDERR_FILENO);
 }
 
 int		header_lib_check(t_data *data)
