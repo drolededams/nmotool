@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 12:47:18 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 13:02:58 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_st(t_data *data, t_symbol_64 **stab, int length)
 	int i;
 	char *s;
 
-	if (data->multi && !data->fat64 && !data->libstatic)
+	if (data->multi && !data->fat && !data->libstatic)
 	{
 		ft_putchar('\n');
 		ft_putstr(data->filename);

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:55:30 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 12:49:02 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 13:41:55 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ uint32_t		error_directory(t_data *data, int fd)
 
 int		put_error(t_data *data)
 {
+	if (data->error == 3)
+		return (1);
 	ft_putstr_fd("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm: ", STDERR_FILENO);
 	ft_putstr_fd(data->filename, STDERR_FILENO);
 	if (data->error == 1)

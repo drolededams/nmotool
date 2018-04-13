@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 20:11:28 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 13:36:49 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ int		offset_check(t_data *data, size_t size)
 		data->error = 0;
 		return (1);
 	}
-	if (data->offset + size > data->filesize)
-		data->error = 1;
+	data->error = 1;
 	return (0);
 }
 

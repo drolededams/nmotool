@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 11:30:53 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 13:37:15 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,7 @@ void	parse_lib(t_data *data)
 					ft_memdel((void**)&filename);
 					data->offset += len;
 					nm_process(data);
-					if (offset_check(data, filesize - len))
-						data->offset += filesize - len;
+					data->offset += filesize - len;
 				}
 				else
 					ft_putendl("error parse_lib offset_check");
@@ -157,8 +156,7 @@ void	parse_lib(t_data *data)
 				ft_memdel((void**)&filename);
 				data->offset += len;
 				nm_process(data);
-				if (offset_check(data, filesize - len))
-					data->offset += filesize - len;
+				data->offset += filesize - len;
 			}
 			else
 				ft_putendl("error parse_lib offset_check");
@@ -196,6 +194,7 @@ void		parse_fat(t_data *data)
 	magic = *(uint32_t*)(data->ptr + data->offset);
 	if (magic == FAT_CIGAM)
 		data->swap = 1;
+	data->fat = 1;
 	if (sizeof(struct fat_header) <= data->filesize)
 	{
 		header = (struct fat_header*)data->ptr;
@@ -216,7 +215,6 @@ void		parse_fat(t_data *data)
 			}
 			if (to_swap(fa->cputype, data) == CPU_TYPE_X86_64)
 			{
-				data->fat64 = 1;
 				data->offset = to_swap(fa->offset, data);
 				nm_process(data);
 			}
