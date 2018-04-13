@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 18:47:40 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 20:19:40 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,17 +66,21 @@ void	get_symtab_64(t_data *data, struct symtab_command *sc, char **sectnames)
 			j = 0;
 			while (i < sc->nsyms)
 			{
-				if(!(tab[i].n_type & N_STAB))
+				if(offset_check(data, ((void*)&tab[i] - data->ptr) + sizeof(struct nlist_64) - data->offset) && offset_check(data, ((void*)str - data->ptr) + tab[i].n_un.n_strx - data->offset) && !(tab[i].n_type & N_STAB))
 				{
+					//check nsects
 					stab[j]->value = tab[i].n_value;
-					stab[j]->type = get_type_64(tab[i], sectnames);
+					stab[j]->type = get_type_64(data, tab[i], sectnames);
 					stab[j]->name = str + tab[i].n_un.n_strx;
 					j++;
 				}
 				i++;
 			}
-			quicksort_64(stab, 1, length);
-			print_st(data, stab, 16);
+			if(!data->error)
+			{
+				quicksort_64(stab, 1, length);
+				print_st(data, stab, 16);
+			}
 		}
 		else
 			ft_putendl("stab allocation failed");
@@ -104,7 +108,7 @@ void	get_symtab_32(t_data *data, struct symtab_command *sc, char **sectnames)
 			if(!(to_swap(tab[i].n_type, data) & N_STAB))
 			{
 				stab[j]->value = to_swap(tab[i].n_value, data);
-				stab[j]->type = get_type_32(tab[i], sectnames);
+				stab[j]->type = get_type_32(data, tab[i], sectnames);
 				stab[j]->name = str + to_swap(tab[i].n_un.n_strx, data);
 				j++;
 			}

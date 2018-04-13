@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/12 13:51:11 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 12:46:10 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 18:13:50 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	static_lib_process(t_data *data)
 	if (header_lib_check(data))
 	{
 		data->libstatic = 1;
-		if (ft_strnequ(data->ptr + data->offset + 60, SYMDEF_64, ft_strlen(SYMDEF_64)))
+		if ((offset_check(data, 60 + ft_strlen(SYMDEF_64)) && ft_strnequ(data->ptr + data->offset + 60, SYMDEF_64, ft_strlen(SYMDEF_64))))
 			parse_lib_64(data);
-		else if (ft_strnequ(data->ptr + data->offset + 60, SYMDEF, ft_strlen(SYMDEF)))
+		else if (offset_check(data, 60 + ft_strlen(SYMDEF)) && ft_strnequ(data->ptr + data->offset + 60, SYMDEF, ft_strlen(SYMDEF)))
 			parse_lib(data);
 	}
 	else
@@ -38,8 +38,7 @@ size_t		filename_lenght(t_data *data)
 	char	*str;
 	size_t	len;
 
-	//offset check
-	if (ft_strnequ(data->ptr + data->offset, "#1/", 3))
+	if (data->offset + 3 < data->filesize  && ft_strnequ(data->ptr + data->offset, "#1/", 3))
 	{
 		str = ft_strnew(13);
 		ft_strncpy(str, data->ptr + data->offset + 3, 13);
@@ -54,7 +53,7 @@ size_t		get_filesize(t_data *data)
 {
 	char	*str;
 	size_t	len;
-
+	//off fait avant de vemir ici ?
 	len = 0;
 	str = ft_strnew(8);
 	ft_strncpy(str, data->ptr + data->offset + 48, 8);

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:28:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/12 18:42:03 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 19:21:06 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ char		**get_sectnames_64(t_data *data, struct load_command *lc, uint32_t ncmds)
 		}
 	}
 	total_offset = sizeof(struct mach_header_64);
-	if ((sectnames = (char**)malloc(sizeof(char*) * nsects - 1)) != NULL && !data->error)
+	data->nsects = nsects;
+	if ((sectnames = (char**)malloc(sizeof(char*) * (nsects))) != NULL && !data->error)
 	{
 		i = 0;
 		while (i < ncmds)
@@ -85,7 +86,7 @@ char		**get_sectnames_32(struct load_command *lc, uint32_t ncmds, t_data *data)
 			nsects += to_swap(((struct segment_command*)cur)->nsects, data);
 		cur = (void*)cur + to_swap(cur->cmdsize, data);
 	}
-	if ((sectnames = (char**)malloc(sizeof(char*) * nsects - 1)) != NULL)
+	if ((sectnames = (char**)malloc(sizeof(char*) * (nsects))) != NULL)
 	{
 		i = 0;
 		while (i < ncmds)

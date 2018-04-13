@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 13:37:15 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 19:22:52 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,14 @@ void	parse_lib(t_data *data)
 	n_objs = 0;
 	i = 0;
 	if(!(filesize = get_filesize(data)))
-		ft_putendl("error parse_lib filesize");
+		ft_putendl("error parse_lib filesize"); //quittage a faire
 	if ((len = filename_lenght(data)))
 		data->offset += 60 + len;
-	if (offset_check(data, sizeof(uint32_t)))
+	if (offset_check(data, sizeof(uint32_t)))//quittage a faire
 	{
 		n_objs = *(uint32_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
 	}
-	if (offset_check(data, filesize - len))
-		data->offset += filesize - len;
+	data->offset += filesize - len;
 	if (n_objs)
 	{
 		while (i < n_objs)

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 13:36:49 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/13 19:42:54 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	fat_process(struct fat_header *header, t_data *data)
 	fa = (void*)(header + 1);
 	data->offset = to_swap(fa->offset, data);
 	total_offset = sizeof(struct fat_header);
-	data->fat = to_swap(header->nfat_arch, data);
+	data->nfat = to_swap(header->nfat_arch, data);
 	while (i < to_swap(header->nfat_arch, data))
 	{
 		parse_mach_o_32(data);
@@ -77,5 +77,5 @@ void	fat_process(struct fat_header *header, t_data *data)
 			data->swap = 1;
 		i++;
 	}
-	data->fat = 0;
+	data->nfat = 0;
 }
