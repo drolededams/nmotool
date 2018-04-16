@@ -6,73 +6,83 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 19:22:52 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/16 19:58:54 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void		parse_mach_o_64(t_data *data)
+void		parse_mach_o_64(t_data *data, uint32_t magic)
 {
 	struct mach_header_64	*header;
 	struct load_command		*lc;
-	uint32_t				i;
-	uint32_t				total_offset;
-	char					**sectnames;
+	char					**sectstr;
 
-	i = 0;
+	data->swap = (magic == MH_CIGAM_64) ? 1 : 0;
 	if (offset_check(data, sizeof(struct mach_header_64)))
 	{
-		total_offset = sizeof(struct mach_header_64);
 		header = (struct mach_header_64*)(data->ptr + data->offset);
-		if (offset_check(data, total_offset + sizeof(struct load_command)))
+		if (offset_check(data, sizeof(struct mach_header_64) +
+			sizeof(struct load_command)))
 		{
-			total_offset += sizeof(struct load_command);
 			lc = (void*)(header + 1);
-			sectnames = get_sectnames_64(data, lc, header->ncmds);
-			while (i++ < header->ncmds && !data->error && lc->cmd != LC_SYMTAB)
-			{
-				if (lc->cmdsize % 8 != 0)
-					data->error = 2;
-				if (!data->error && offset_check(data, total_offset + sizeof(struct load_command) + lc->cmdsize))
-				{
-					total_offset += lc->cmdsize;
-					lc = (void*)lc + lc->cmdsize;
-				}
-			}
-			if (!data->error && lc->cmd == LC_SYMTAB)
-				get_symtab_64(data, (struct symtab_command*)lc, sectnames);
+			sectstr = get_sectnames_64(data, lc, to_swap(header->ncmds, data));
+			lc = search_symtab(to_swap(header->ncmds, data), lc, data,
+					MOD_SIZE_64);
+			if (!data->error && to_swap(lc->cmd, data) == LC_SYMTAB && sectstr)
+				get_symtab_64(data, (struct symtab_command*)lc, sectstr);
 		}
 	}
 }
 
-void		parse_mach_o_32(t_data *data)
+void		parse_mach_o_32(t_data *data, uint32_t magic)
 {
-	struct mach_header	*header;
+	struct mach_header		*header;
 	struct load_command		*lc;
-	uint32_t				i;
-	char					**sectnames;
-	uint32_t				magic;
+	char					**sectstr;
 
+	data->is_64 = 0; //utile ?
+	data->swap = (magic == MH_CIGAM) ? 1 : 0;
+	if (offset_check(data, sizeof(struct mach_header)))
+	{
+		header = (struct mach_header*)(data->ptr + data->offset);
+		if (offset_check(data, sizeof(struct mach_header) +
+			sizeof(struct load_command)))
+		{
+			lc = (void*)(header + 1);
+			sectstr = get_sectnames_32(lc, to_swap(header->ncmds, data), data);
+			lc = search_symtab(to_swap(header->ncmds, data), lc, data,
+					MOD_SIZE);
+			if (!data->error && to_swap(lc->cmd, data) == LC_SYMTAB && sectstr)
+				get_symtab_32(data, (struct symtab_command*)lc, sectstr);
+		}
+	}
+}
+
+struct load_command	*search_symtab(uint32_t ncmds, struct load_command *lc,
+	t_data *data, uint32_t modsize)
+{
+	uint32_t	i;
+	uint32_t	offset;
+
+	if (modsize == MOD_SIZE_64)
+		offset = sizeof(struct mach_header_64) + sizeof(struct load_command);
+	else
+		offset = sizeof(struct mach_header) + sizeof(struct load_command);
 	i = 0;
-	magic = *(uint32_t*)(data->ptr + data->offset);
-	data->swap = 0;
-	data->is_64 = 0;
-	if (magic == MH_CIGAM)
-		data->swap = 1;
-	header = (struct mach_header*)(data->ptr + data->offset);
-	lc = (void*)(header + 1);
-	sectnames = get_sectnames_32(lc, to_swap(header->ncmds, data), data);
-	while (i++ < to_swap(header->ncmds, data) && to_swap(lc->cmd, data) != LC_SYMTAB)
+	while (i++ < to_swap(ncmds, data) && !data->error &&
+			to_swap(lc->cmd, data) != LC_SYMTAB)
 	{
-		if (to_swap(lc->cmdsize, data) % 4 != 0)//cas a gerer par un break ou autre + propre
-			ft_putendl("not a multiple of 8");
-		lc = (void*)lc + to_swap(lc->cmdsize, data);
+		if ((to_swap(lc->cmdsize, data) % modsize) != 0)
+			data->error = 2;
+		if (!data->error && offset_check(data, sizeof(struct load_command) +
+					to_swap(lc->cmdsize, data)))
+		{
+			offset += to_swap(lc->cmdsize, data);
+			lc = (void*)lc + to_swap(lc->cmdsize, data);
+		}
 	}
-	if (to_swap(lc->cmd, data) == LC_SYMTAB)
-	{
-		get_symtab_32(data, (struct symtab_command*)lc, sectnames);
-	}
+	return (lc);
 }
 
 void	parse_lib(t_data *data)
@@ -85,28 +95,30 @@ void	parse_lib(t_data *data)
 
 	n_objs = 0;
 	i = 0;
-	if(!(filesize = get_filesize(data)))
-		ft_putendl("error parse_lib filesize"); //quittage a faire
-	if ((len = filename_lenght(data)))
+	filesize = 0;
+	len = 0;//init car check avant data error
+	if(!data->error && !(filesize = get_filesize(data)))
+		ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
+	if (!data->error && offset_check(data, 2) && (len = filename_lenght(data)))
 		data->offset += 60 + len;
-	if (offset_check(data, sizeof(uint32_t)))//quittage a faire
+	if (!data->error && offset_check(data, sizeof(uint32_t)))//quittage a faire
 	{
 		n_objs = *(uint32_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
 	}
 	data->offset += filesize - len;
-	if (n_objs)
+	if (!data->error && n_objs)
 	{
-		while (i < n_objs)
+		while (i < n_objs && !data->error)
 		{
 			if ((len = filename_lenght(data)))
 			{
 				if (offset_check(data, 60))
 				{
 					if(!(filesize = get_filesize(data)))
-						ft_putendl("error parse_lib filesize");
+						ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
 				}
 				else
-					ft_putendl("error parse_lib offset_check");
+					ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
 				data->offset += 60;
 				if (offset_check(data, len))
 				{
@@ -123,25 +135,22 @@ void	parse_lib(t_data *data)
 					data->offset += filesize - len;
 				}
 				else
-					ft_putendl("error parse_lib offset_check");
+					ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
 			}
-			//else
-			//	ft_putendl("error parse_lib filename_lenght");
-			//	marche sans else mais pourquoi ? dangerueux ? 
 			i++;
 		}
 	}
-	else
+	else if (!data->error)
 	{
 		while ((len = filename_lenght(data)))
 		{
 			if (offset_check(data, 60))
 			{
 				if(!(filesize = get_filesize(data)))
-					ft_putendl("error parse_lib filesize");
+					ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
 			}
 			else
-				ft_putendl("error parse_lib offset_check");
+				ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
 			data->offset += 60;
 			if (offset_check(data, len))
 			{
@@ -158,28 +167,99 @@ void	parse_lib(t_data *data)
 				data->offset += filesize - len;
 			}
 			else
-				ft_putendl("error parse_lib offset_check");
+				ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
 		}
 	}
 }
 
 void	parse_lib_64(t_data *data)
 {
-	uint64_t	n_objs;
-	uint64_t	i;
+	uint32_t	n_objs;
+	uint32_t	i;
+	uint32_t	filesize;
 	size_t		len;
+	char		*filename;
 
 	n_objs = 0;
 	i = 0;
-	if ((len = filename_lenght(data)))
+	filesize = 0;
+	len = 0;//init car check avant data error
+	if(!data->error && !(filesize = get_filesize(data)))
+		ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
+	if (!data->error && offset_check(data, 2) && (len = filename_lenght(data)))
 		data->offset += 60 + len;
-	if (offset_check(data, sizeof(uint64_t)))
+	if (!data->error && offset_check(data, sizeof(uint64_t)))
 	{
-		n_objs = *(uint64_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
-		data->offset += *(uint64_t*)(data->ptr + data->offset);
+		n_objs = *(uint64_t*)(data->ptr + data->offset) / sizeof(struct ranlib_64);
 	}
-	if (offset_check(data, sizeof(uint64_t)))
-		data->offset += *(uint64_t*)(data->ptr + data->offset);
+	data->offset += filesize - len;
+	if (!data->error && n_objs)
+	{
+		while (i < n_objs && !data->error)
+		{
+			if ((len = filename_lenght(data)))
+			{
+				if (offset_check(data, 60))
+				{
+					if(!(filesize = get_filesize(data)))
+						ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
+				}
+				else
+					ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+				data->offset += 60;
+				if (offset_check(data, len))
+				{
+					filename = ft_strnew(len);
+					ft_strncpy(filename, data->ptr + data->offset, len);
+					ft_putchar('\n');
+					ft_putstr(data->filename);
+					ft_putchar('(');
+					ft_putstr(filename);
+					ft_putendl("):");
+					ft_memdel((void**)&filename);
+					data->offset += len;
+					nm_process(data);
+					data->offset += filesize - len;
+				}
+				else
+					ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+			}
+			//else
+			//	ft_putendl("error parse_lib filename_lenght");
+			//	marche sans else mais pourquoi ? dangerueux ? 
+			i++;
+		}
+	}
+	else if (!data->error)
+	{
+		while ((len = filename_lenght(data)))
+		{
+			if (offset_check(data, 60))
+			{
+				if(!(filesize = get_filesize(data)))
+					ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
+			}
+			else
+				ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+			data->offset += 60;
+			if (offset_check(data, len))
+			{
+				filename = ft_strnew(len);
+				ft_strncpy(filename, data->ptr + data->offset, len);
+				ft_putchar('\n');
+				ft_putstr(data->filename);
+				ft_putchar('(');
+				ft_putstr(filename);
+				ft_putendl("):");
+				ft_memdel((void**)&filename);
+				data->offset += len;
+				nm_process(data);
+				data->offset += filesize - len;
+			}
+			else
+				ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+		}
+	}
 }
 
 void		parse_fat(t_data *data)

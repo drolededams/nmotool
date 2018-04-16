@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/13 17:55:39 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/16 16:24:05 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_st(t_data *data, t_symbol_64 **stab, int length)
 		ft_putchar('\n');
 		ft_putstr(data->filename);
 		ft_putstr(":\n");
-	}//sauf quand fat ??
+	}
 	i = 0;
 	while (stab[i])
 	{
