@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:55:30 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 18:23:05 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/17 18:44:34 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ int				put_error(t_data *data)
 XcodeDefault.xctoolchain/usr/bin/nm: ", STDERR_FILENO);
 	ft_putstr_fd(data->filename, STDERR_FILENO);
 	if (data->error == 1)
-		ft_putendl_fd(" truncated or malformed object\
+		ft_putendl_fd(" truncated or malformed object \
 (past the end of the file)", STDERR_FILENO);
 	else if (data->error == 2)
-		ft_putendl_fd(" truncated or malformed object\
+		ft_putendl_fd(" truncated or malformed object \
 (not a multiple of 8)", STDERR_FILENO);
 	else if (data->error == 4)
-		ft_putendl_fd(" The file was not recognized as a valid\
+		ft_putendl_fd(" The file was not recognized as a valid \
 object file", STDERR_FILENO);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	return (1);

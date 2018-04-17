@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 19:51:45 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/17 11:28:47 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	mach_o_process(t_data *data)
 		else if (magic == MH_MAGIC || magic == MH_CIGAM)
 			parse_mach_o_32(data, magic);
 		else if (magic == FAT_MAGIC || magic == FAT_CIGAM)
-			parse_fat(data);
+			parse_fat(data, magic);
 		else
 			data->error = 4;
 	}
@@ -76,4 +76,31 @@ void	fat_process(struct fat_header *header, t_data *data)
 		i++;
 	}
 	data->nfat = 0;
+}
+
+void	lib_process(t_data *data)
+{
+	size_t		len;
+	uint32_t	filesize;
+
+	if ((len = filename_lenght(data)))
+	{
+		if (offset_check(data, 60))
+		{
+			if (!(filesize = get_filesize(data)))
+				ft_putendl_fd("error parse_lib filesize", STDERR_FILENO);
+		}
+		else
+			ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+		data->offset += 60;
+		if (offset_check(data, len))
+		{
+			print_lib_name(data, len);
+			data->offset += len;
+			nm_process(data);
+			data->offset += filesize - len;
+		}
+		else
+			ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
+	}
 }

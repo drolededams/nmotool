@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:21:00 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 18:09:28 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/17 18:44:10 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 int		main(int ac, char **av)
 {
 	t_data	*data;
+	int		err;
 
+	err = 0;
 	if ((data = (t_data*)malloc(sizeof(t_data))))
 	{
 		if (ac == 1)
@@ -28,11 +30,12 @@ int		main(int ac, char **av)
 	else
 	{
 		ft_putendl_fd("malloc struct data failed", STDERR_FILENO);
-		return (0);
+		return (err);
 	}
 	if (data->error)
-		return (put_error(data));
-	return (0);
+		err = put_error(data);
+	free_data(data);
+	return (err);
 }
 
 void	multi_open(t_data *data, int ac, char **av)
@@ -45,6 +48,7 @@ void	multi_open(t_data *data, int ac, char **av)
 		data->error = open_mmap(av[i++], 1, data);
 		if (data->error && data->error != 3)
 			put_error(data);
+		free_filename(data);
 	}
 	data->error = 0;
 }

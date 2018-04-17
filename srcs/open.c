@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:28:59 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 18:39:54 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/17 16:49:16 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ uint32_t		open_mmap(char *file, int multi, t_data *data)
 	else
 	{
 		data->filesize = buf.st_size;
-		data->offset = 0;
 		nm_process(data);
 		close(fd);
 		if (munmap(data->ptr, buf.st_size) == -1)
@@ -42,13 +41,12 @@ uint32_t		open_mmap(char *file, int multi, t_data *data)
 void			init_data(t_data *data, int multi, char *file)
 {
 	data->filename = ft_strdup(file);
+	data->offset = 0;
 	data->swap = 0;
 	data->error = 0;
 	data->fat = 0;
 	data->nfat = 0;
 	data->multi = multi;
-	data->is_64 = 1;
-	data->fat64 = 0;
 	data->libstatic = 0;
 	data->nsects = 0;
 }

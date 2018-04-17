@@ -6,16 +6,16 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 16:24:05 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/17 19:11:57 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	print_st(t_data *data, t_symbol_64 **stab, int length)
+void		print_st(t_data *data, t_symbol_64 **stab, int length)
 {
 	int i;
-	char *s;
+	int j;
 
 	if (data->multi && !data->fat && !data->libstatic)
 	{
@@ -26,20 +26,12 @@ void	print_st(t_data *data, t_symbol_64 **stab, int length)
 	i = 0;
 	while (stab[i])
 	{
+		j = 0;
 		if (stab[i]->type == 'U')
-		{
-			if (length == 16)
-				ft_putstr("                 ");
-			else
-				ft_putstr("         ");
-		}
+			while (j++ <= length)
+				ft_putchar(' ');
 		else
-		{
-			s = value_to_str(stab[i]->value, "0123456789abcdef", length);
-			ft_putstr(s);
-			ft_putchar(' ');
-			free(s);
-		}
+			print_value(stab[i]->value, "0123456789abcdef", length);
 		ft_putchar(stab[i]->type);
 		ft_putchar(' ');
 		ft_putendl(stab[i]->name);
@@ -51,7 +43,8 @@ void		print_arch(t_data *data)
 {
 	cpu_type_t cpu;
 
-	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype, data);
+	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype,
+			data);
 	if (data->nfat > 1)
 	{
 		ft_putchar('\n');
@@ -70,25 +63,44 @@ void		print_arch(t_data *data)
 	}
 }
 
-char		*value_to_str(uint64_t value, char *hex, int i)
+void		print_value(uint64_t value, char *hex, int i)
 {
 	char		*str;
 	uint32_t	r;
 
 	if (!(str = (char*)malloc(sizeof(char) * (i + 1))))
 		ft_putendl("Probleme allocation");
-	str[i] = '\0';
-	while (value)
+	else
 	{
-		i--;
-		r = value % 16;
-		str[i] = hex[r];
-		value /= 16;
+		str[i] = '\0';
+		while (value)
+		{
+			i--;
+			r = value % 16;
+			str[i] = hex[r];
+			value /= 16;
+		}
+		while (i > 0)
+		{
+			i--;
+			str[i] = '0';
+		}
+		ft_putstr(str);
+		ft_putchar(' ');
+		ft_memdel((void*)&str);
 	}
-	while (i > 0)
-	{
-		i--;
-		str[i] = '0';
-	}
-	return (str);
+}
+
+void		print_lib_name(t_data *data, size_t len)
+{
+	char *filename;
+
+	filename = ft_strnew(len);
+	ft_strncpy(filename, data->ptr + data->offset, len);
+	ft_putchar('\n');
+	ft_putstr(data->filename);
+	ft_putchar('(');
+	ft_putstr(filename);
+	ft_putendl("):");
+	ft_memdel((void**)&filename);
 }
