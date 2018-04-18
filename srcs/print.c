@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 19:11:57 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 12:22:31 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void		print_value(uint64_t value, char *hex, int i)
 		}
 		ft_putstr(str);
 		ft_putchar(' ');
-		ft_memdel((void*)&str);
+		ft_memdel((void**)&str);
 	}
 }
 

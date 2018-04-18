@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 18:59:12 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 12:34:28 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ typedef struct		s_symbol_64
 	uint64_t	value;
 	char		type;
 	char		*name;
-	char		*object;
 }					t_symbol_64;
 
 typedef struct		s_data

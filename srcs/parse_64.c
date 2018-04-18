@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 18:53:17 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 13:01:45 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	parse_mach_o_64(t_data *data, uint32_t magic)
 			MOD_SIZE_64);
 			if (!data->error && to_swap(lc->cmd, data) == LC_SYMTAB && sectstr)
 				get_symtab_64(data, (struct symtab_command*)lc, sectstr);
-			else
+			if (sectstr)
 				free_sectnames(sectstr);
 		}
 	}
@@ -56,7 +56,7 @@ void	parse_mach_o_32(t_data *data, uint32_t magic)
 					MOD_SIZE);
 			if (!data->error && to_swap(lc->cmd, data) == LC_SYMTAB && sectstr)
 				get_symtab_32(data, (struct symtab_command*)lc, sectstr);
-			else
+			if (sectstr)
 				free_sectnames(sectstr);
 		}
 	}
