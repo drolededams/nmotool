@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 15:12:33 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:27:33 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 18:42:37 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,4 +105,18 @@ void		print_addr(uint64_t addr, char *hex, int i)
 		ft_putstr(str);
 		ft_memdel((void**)&str);
 	}
+}
+
+void		print_lib_name(t_data *data, size_t len)
+{
+	char *filename;
+
+	filename = ft_strnew(len);
+	ft_strncpy(filename, data->ptr + data->offset, len);
+	ft_putchar('\n');
+	ft_putstr(data->filename);
+	ft_putchar('(');
+	ft_putstr(filename);
+	ft_putendl("):");
+	ft_memdel((void**)&filename);
 }

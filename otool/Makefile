@@ -6,14 +6,14 @@
 #    By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/05/12 15:32:27 by dgameiro          #+#    #+#              #
-#    Updated: 2018/04/18 18:16:56 by dgameiro         ###   ########.fr        #
+#    Updated: 2018/04/18 18:36:41 by dgameiro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 CFLAGS = -Ilibft -Iinc -Wall -Wextra -Werror
 SRC = main.c open.c ot_process.c parse.c print.c section.c free.c error.c \
-	  swap.c fat_ut.c
+	  swap.c fat_ut.c lib_ut.c
 OBJDIR = objs
 VPATH = srcs
 

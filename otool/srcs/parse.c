@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:13:49 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 18:39:25 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	parse_mach_o_32(t_data *data, uint32_t magic)
 		}
 	}
 }
-/*
+
 void	parse_lib(t_data *data)
 {
 	uint32_t	n_objs;
@@ -106,7 +106,7 @@ void	parse_lib_64(t_data *data)
 		while ((len = filename_lenght(data)))
 			lib_process(data);
 }
-*/
+
 void	parse_fat(t_data *data, uint32_t magic)
 {
 	struct fat_header	*f_header;

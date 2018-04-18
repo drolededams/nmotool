@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:16:23 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 18:40:46 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,13 @@ void	is_sec_32(t_data *data, struct load_command *lc, uint32_t j);
 void	parse_fat(t_data *data, uint32_t magic);
 void	fat_process(struct fat_header *header, t_data *data);
 int		search_x86_64(t_data *data, struct fat_arch *fa, uint32_t nfat_arch);
+void	lib_process(t_data *data);
+void	static_lib_process(t_data *data);
+int		header_lib_check(t_data *data);
+size_t	filename_lenght(t_data *data);
+size_t	get_filesize(t_data *data);
+int		is_static(t_data *data);
+void	parse_lib_64(t_data *data);
+void	parse_lib(t_data *data);
+void		print_lib_name(t_data *data, size_t len);
 #endif

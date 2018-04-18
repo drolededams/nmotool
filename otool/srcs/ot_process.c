@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:14:15 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/18 18:52:51 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	ot_process(t_data *data)
 {
-//	if (is_static(data))
-//		static_lib_process(data);
-//	else
+	if (is_static(data))
+		static_lib_process(data);
+	else
 		mach_o_process(data);
 }
 
@@ -77,7 +77,7 @@ void	fat_process(struct fat_header *header, t_data *data)
 	}
 	data->nfat = 0;
 }
-/*
+
 void	lib_process(t_data *data)
 {
 	size_t		len;
@@ -103,4 +103,4 @@ void	lib_process(t_data *data)
 		else
 			ft_putendl_fd("error parse_lib offset_check", STDERR_FILENO);
 	}
-}*/
+}
