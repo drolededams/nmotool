@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 13:51:49 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 17:50:21 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 11:48:23 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	search_t_sec_64(t_data *data, struct load_command *lc, uint32_t ncmds)
 
 	i = 0;
 	offset = sizeof(struct mach_header_64);
+	data->sec = NULL;
 	while (i++ < ncmds && !data->sec)
 	{
 		if (to_swap(lc->cmd, data) == LC_SEGMENT_64)
@@ -48,7 +49,7 @@ void	is_sec_64(t_data *data, struct load_command *lc, uint32_t j)
 			sizeof(struct section_64));
 	if(ft_strequ(section->segname, "__TEXT") &&
 		ft_strequ(section->sectname, "__text"))
-			data->sec = section;
+			data->sec = (void*)section;
 }
 
 void	search_t_sec_32(t_data *data, struct load_command *lc, uint32_t ncmds)
@@ -59,6 +60,7 @@ void	search_t_sec_32(t_data *data, struct load_command *lc, uint32_t ncmds)
 
 	i = 0;
 	offset = sizeof(struct mach_header);
+	data->sec = NULL;
 	while (i++ < ncmds && !data->sec)
 	{
 		if (to_swap(lc->cmd, data) == LC_SEGMENT)
@@ -87,5 +89,5 @@ void	is_sec_32(t_data *data, struct load_command *lc, uint32_t j)
 			sizeof(struct section));
 	if(ft_strequ(section->segname, "__TEXT") &&
 		ft_strequ(section->sectname, "__text"))
-			data->sec = section;
+			data->sec = (void*)section;
 }

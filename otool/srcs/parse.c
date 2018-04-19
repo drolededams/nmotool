@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:39:25 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 13:07:06 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	parse_mach_o_64(t_data *data, uint32_t magic)
 		if (offset_check(data, sizeof(struct mach_header_64) +
 			sizeof(struct load_command)))
 		{
+			data->exe =  (to_swap(header->filetype, data) == MH_EXECUTE) ? 0x100000000 : 0;
+			data->obj =  (to_swap(header->filetype, data) == MH_OBJECT) ? 1 : 0;
 			lc = (void*)(header + 1);
 			search_t_sec_64(data, lc, to_swap(header->ncmds, data));
 			if (!data->error && data->sec)
@@ -44,6 +46,8 @@ void	parse_mach_o_32(t_data *data, uint32_t magic)
 		if (offset_check(data, sizeof(struct mach_header) +
 			sizeof(struct load_command)))
 		{
+			data->exe =  (to_swap(header->filetype, data) == MH_EXECUTE) ? 0x1000 : 0;
+			data->obj =  (to_swap(header->filetype, data) == MH_OBJECT) ? 1 : 0;
 			lc = (void*)(header + 1);
 			search_t_sec_32(data, lc, to_swap(header->ncmds, data));
 			if (!data->error && data->sec)
@@ -70,6 +74,8 @@ void	parse_lib(t_data *data)
 	if (!data->error && offset_check(data, sizeof(uint32_t)))
 		n_objs = *(uint32_t*)(data->ptr + data->offset) / sizeof(struct ranlib);
 	data->offset += filesize - len;
+	ft_putstr("Archive : ");
+	ft_putendl(data->filename);
 	if (!data->error && n_objs)
 		while (i++ < n_objs && !data->error)
 			lib_process(data);

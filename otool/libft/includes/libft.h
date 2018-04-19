@@ -6,7 +6,7 @@
 /*   By: dgameiro <dgameiro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/19 17:56:55 by dgameiro          #+#    #+#             */
-/*   Updated: 2016/12/16 16:10:20 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 15:17:26 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,4 +103,5 @@ int				ft_power(int nb, int power);
 int				ft_poschar(char *str, char a);
 int				ft_ishexa(char c);
 double			ft_atof(const char *str);
+void			ft_putnbrnl(int n);
 #endif

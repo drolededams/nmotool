@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:28:59 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 15:27:22 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 13:08:52 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,6 @@ void			init_data(t_data *data, int multi, char *file)
 	data->multi = multi;
 	data->libstatic = 0;
 	data->nsects = 0;
+	data->obj = 0;
+	data->exe= 0;
 }

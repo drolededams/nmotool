@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 18:40:46 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 16:22:19 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ typedef struct		s_data
 	int			libstatic;
 	int			swap;
 	int			multi;
+	int			obj;
+	uint64_t	exe;
 	uint32_t	fat;
 	uint32_t	nfat;
 	uint32_t	nsects;
@@ -78,4 +80,6 @@ int		is_static(t_data *data);
 void	parse_lib_64(t_data *data);
 void	parse_lib(t_data *data);
 void		print_lib_name(t_data *data, size_t len);
+void		print_char(unsigned char c, char *hex, char *dest);
+void		print_content(char *str, char *hex, char* dest, uint32_t n);
 #endif
