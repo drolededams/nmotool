@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 12:34:28 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 18:47:56 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,4 +130,5 @@ void				free_data(t_data *data);
 void				free_filename(t_data *data);
 void				free_sectnames(char **sectnames);
 void				free_stab(t_symbol_64 **stab);
+void				putendl_protect(char *name, t_data *data);
 #endif

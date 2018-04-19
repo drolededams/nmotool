@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:24:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/18 12:22:31 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/04/19 18:45:29 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,24 @@ void		print_st(t_data *data, t_symbol_64 **stab, int length)
 			print_value(stab[i]->value, "0123456789abcdef", length);
 		ft_putchar(stab[i]->type);
 		ft_putchar(' ');
-		ft_putendl(stab[i]->name);
+		putendl_protect(stab[i]->name, data);
 		i++;
 	}
+}
+
+void		putendl_protect(char *name, t_data *data)
+{
+	uint64_t	i;
+	uint64_t	offset;
+
+	offset = (uint64_t)name - (uint64_t)data->ptr;
+	i = 0;
+	while (offset + i < data->filesize && name[i])
+	{
+		ft_putchar(name[i]);
+		i++;
+	}
+	ft_putchar('\n');
 }
 
 void		print_arch(t_data *data)
