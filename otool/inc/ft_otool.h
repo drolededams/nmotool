@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/15 17:58:12 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/18 11:30:23 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,10 @@ void	parse_lib(t_data *data);
 void		print_lib_name(t_data *data, size_t len);
 void		print_char(unsigned char c, char *hex, char *dest);
 void		print_content(char *str, char *hex, char* dest, uint32_t n);
-void		print_arch(t_data *data);
+void		print_arch(t_data *data, struct section_64 *sec, uint32_t offset);
 void		print_content_ppc(char *str, char *hex, char* dest, uint32_t n);
+void		print_ppc(t_data *data, struct section *sec, uint32_t offset);
+void		print_arch_32(t_data *data, struct section *sec, uint32_t offset);
+void		print_normal_32(t_data *data, struct section *sec, uint32_t offset);
+void		print_normal_64(t_data *data, struct section_64 *sec, uint32_t offset);
 #endif

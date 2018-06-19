@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 15:12:33 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/15 18:17:22 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/18 18:47:37 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,80 +14,84 @@
 
 void		print_64(t_data *data)
 {
-	unsigned long i;
-	int j;
-	struct section_64 *sec;
-	uint32_t offset;
-	uint32_t len;
-	char *str;
-	cpu_type_t cpu;
+	struct section_64	*sec;
+	uint32_t			offset;
 
 	sec = (struct section_64*)data->sec;
 	offset = (data->libstatic || data->obj) ? 0 : to_swap(sec->offset, data);
 	offset_check(data, to_swap(offset, data) + to_swap(sec->size, data));
-	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype,
-			data);
-	//data erro 
-	if (data->multi && !data->fat && !data->libstatic && !data->error)
+	if (data->fat && !data->libstatic && !data->error)
+		print_arch(data, sec, offset);
+	else if (data->multi && !data->fat && !data->libstatic && !data->error)
 	{
 		ft_putchar('\n');
 		ft_putstr(data->filename);
 		ft_putstr(":\n");
+		print_normal_64(data, sec, offset);
 	}
-	i = 0;
-	if (!data->libstatic && !data->fat)
+	else if (!data->libstatic && !data->fat && !data->error)
 	{
 		ft_putstr(data->filename);
 		ft_putendl(":");
+		print_normal_64(data, sec, offset);
 	}
-	if (data->fat && !data->libstatic)
-		print_arch(data);
+	else if (data->libstatic && !data->error)
+		print_normal_64(data, sec, offset);
+}
+
+void		print_normal_64(t_data *data, struct section_64 *sec,
+	uint32_t offset)
+{
+	unsigned long	i;
+	int				j;
+	uint32_t		len;
+	char			*str;
+
+	i = 0;
 	ft_putendl("Contents of (__TEXT,__text) section");
-	if (data->fat && cpu == CPU_TYPE_POWERPC)
+	while ((i * 16) < to_swap(sec->size, data))
 	{
-		while ((i * 16) < to_swap(sec->size, data))
-		{
-			j = 0;
-			print_addr((uint64_t)(offset + (i * 16) + data->exe), "0123456789abcdef", 16);
-			ft_putchar('\t');
-			str = ft_strnew(47);
-			/*while (j < 16 && ((i * 16) + j) < to_swap(sec->size, data))
-			{
-				print_char(*(char*)(data->ptr + sec->offset + i * 16 + j + data->offset), "0123456789abcdef", str);
-				j++;
-			}*/
-			len = ((i * 16) + 15 < to_swap(sec->size, data)) ? 16 : to_swap(sec->size, data) - (i * 16);
-			//check len offset ?
-			print_content_ppc((char*)(data->ptr + to_swap(sec->offset, data) + i * 16 + data->offset), "0123456789abcdef", str, len);
-			ft_putendl(str);
-			ft_memdel((void**)&str);
-			i++;
-		}
-	}
-	else
-	{
-		while ((i * 16) < to_swap(sec->size, data))
-		{
-			j = 0;
-			print_addr((uint64_t)(offset + (i * 16) + data->exe), "0123456789abcdef", 16);
-			ft_putchar('\t');
-			str = ft_strnew(47);
-			/*while (j < 16 && ((i * 16) + j) < to_swap(sec->size, data))
-			{
-				print_char(*(char*)(data->ptr + sec->offset + i * 16 + j + data->offset), "0123456789abcdef", str);
-				j++;
-			}*/
-			len = ((i * 16) + 15 < to_swap(sec->size, data)) ? 16 : to_swap(sec->size, data) - (i * 16);
-			//check len offset ?
-			print_content((char*)(data->ptr + to_swap(sec->offset, data) + i * 16 + data->offset), "0123456789abcdef", str, len);
-			ft_putendl(str);
-			ft_memdel((void**)&str);
-			i++;
-		}
+		j = 0;
+		print_addr((uint64_t)(offset + (i * 16) + data->exe),
+			"0123456789abcdef", 16);
+		ft_putchar('\t');
+		str = ft_strnew(47);
+		len = ((i * 16) + 15 < to_swap(sec->size, data)) ?
+			16 : to_swap(sec->size, data) - (i * 16);
+		print_content((char*)(data->ptr + to_swap(sec->offset, data) +
+			i * 16 + data->offset), "0123456789abcdef", str, len);
+		ft_putendl(str);
+		ft_memdel((void**)&str);
+		i++;
 	}
 }
 
-void		print_char(unsigned char c, char *hex, char* dest)
+void		print_arch(t_data *data, struct section_64 *sec, uint32_t offset)
+{
+	cpu_type_t cpu;
+
+	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype,
+		data);
+	if (data->nfat > 1)
+	{
+		ft_putstr(data->filename);
+		ft_putchar(' ');
+		ft_putstr("(architecture ");
+		if (cpu == CPU_TYPE_POWERPC)
+			ft_putendl("ppc):");
+		else if (cpu == CPU_TYPE_I386)
+			ft_putendl("i386):");
+		print_normal_64(data, sec, offset);
+	}
+	else
+	{
+		ft_putstr(data->filename);
+		ft_putendl(":");
+		print_normal_64(data, sec, offset);
+	}
+}
+
+void		print_char(unsigned char c, char *hex, char *dest)
 {
 	char		*str;
 	uint32_t	r;
@@ -108,21 +112,18 @@ void		print_char(unsigned char c, char *hex, char* dest)
 			c /= 16;
 		}
 		while (i > 0)
-		{
-			i--;
-			str[i] = '0';
-		}
+			str[i--] = '0';
 		ft_strcat(dest, str);
 		ft_memdel((void**)&str);
 	}
 }
 
-void		print_content(char *str, char *hex, char* dest, uint32_t n)
+void		print_content(char *str, char *hex, char *dest, uint32_t n)
 {
-	uint32_t	r;
-	uint32_t	i;
-	int			j;
-	unsigned char		c;
+	uint32_t		r;
+	uint32_t		i;
+	int				j;
+	unsigned char	c;
 
 	i = 0;
 	while (i < n)
@@ -138,140 +139,10 @@ void		print_content(char *str, char *hex, char* dest, uint32_t n)
 			j--;
 		}
 		while (j >= 0)
-		{
-			dest[i * 3 + j] = '0';
-			j--;
-		}
+			dest[i * 3 + j--] = '0';
 		i++;
 	}
 	dest[i * 3] = '\0';
-}
-
-void		print_content_ppc(char *str, char *hex, char* dest, uint32_t n)
-{
-	uint32_t	r;
-	uint32_t	i;
-	int			j;
-	unsigned char		c;
-
-	i = 0;
-	while (i < n)
-	{
-		c = str[i];
-		if ((i + 1) % 4 == 0)
-			dest[((i + 1) * 2) / 8 + (i + 1) * 2 - 1] = ' ';
-		j = 1;
-		while (c)
-		{
-			r = c % 16;
-			dest[i * 2 + (i / 4) + j] = hex[r];
-			c /= 16;
-			j--;
-		}
-		while (j >= 0)
-		{
-			dest[i * 2 + (i / 4) + j] = '0';
-			j--;
-		}
-		i++;
-	}
-	dest[i * 2 + (i / 4)] = '\0';
-}
-
-void		print_arch(t_data *data)
-{
-	cpu_type_t cpu;
-
-	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype,
-			data);
-	if (data->nfat > 1)
-	{
-		ft_putstr(data->filename);
-		ft_putchar(' ');
-		ft_putstr("(architecture ");
-		if (cpu == CPU_TYPE_POWERPC)
-			ft_putendl("ppc):");
-		else if (cpu == CPU_TYPE_I386)
-			ft_putendl("i386):");
-	}
-	else
-	{
-		ft_putstr(data->filename);
-		ft_putendl(":");
-	}
-}
-
-void		print_32(t_data *data)
-{
-	unsigned long i;
-	int j;
-	struct section *sec;
-	uint32_t		offset;
-	char *str;
-	uint32_t len;
-	cpu_type_t cpu;
-
-	sec = (struct section*)data->sec;
-	cpu = to_swap(((struct mach_header*)(data->ptr + data->offset))->cputype, data);
-	offset = (data->libstatic || data->obj) ? 0 : to_swap(sec->offset, data);
-	offset_check(data, to_swap(sec->offset, data) + to_swap(sec->size, data));
-	if (data->multi && !data->fat && !data->libstatic && !data->error)
-	{
-		ft_putchar('\n');
-		ft_putstr(data->filename);
-		ft_putstr(":\n");
-	}
-	i = 0;
-	if (!data->libstatic && !data->fat)
-	{
-		ft_putstr(data->filename);
-		ft_putendl(":");
-	}
-	if (data->fat && !data->libstatic)
-		print_arch(data);
-	ft_putendl("Contents of (__TEXT,__text) section");
-	if (data->fat && cpu == CPU_TYPE_POWERPC)
-	{
-		while ((i * 16) < to_swap(sec->size, data))
-		{
-			j = 0;
-			print_addr((uint64_t)(offset + (i * 16) + data->exe), "0123456789abcdef", 8);
-			ft_putchar('\t');
-			str = ft_strnew(47);
-			/*while (j < 16 && ((i * 16) + j) < to_swap(sec->size, data))
-			{
-				print_char(*(char*)(data->ptr + sec->offset + i * 16 + j + data->offset), "0123456789abcdef", str);
-				j++;
-			}*/
-			len = ((i * 16) + 15 < to_swap(sec->size, data)) ? 16 : to_swap(sec->size, data) - (i * 16);
-			//check len offset ?
-			print_content_ppc((char*)(data->ptr + to_swap(sec->offset, data) + i * 16 + data->offset), "0123456789abcdef", str, len);
-			ft_putendl(str);
-			ft_memdel((void**)&str);
-			i++;
-		}
-	}
-	else
-	{
-		while ((i * 16) < to_swap(sec->size, data))
-		{
-			j = 0;
-			print_addr((uint64_t)(offset + (i * 16) + data->exe), "0123456789abcdef", 8);
-			ft_putchar('\t');
-			str = ft_strnew(47);
-			/*while (j < 16 && ((i * 16) + j) < to_swap(sec->size, data))
-			{
-				print_char(*(char*)(data->ptr + sec->offset + i * 16 + j + data->offset), "0123456789abcdef", str);
-				j++;
-			}*/
-			len = ((i * 16) + 15 < to_swap(sec->size, data)) ? 16 : to_swap(sec->size, data) - (i * 16);
-			//check len offset ?
-			print_content((char*)(data->ptr + to_swap(sec->offset, data) + i * 16 + data->offset), "0123456789abcdef", str, len);
-			ft_putendl(str);
-			ft_memdel((void**)&str);
-			i++;
-		}
-	}
 }
 
 void		print_addr(uint64_t addr, char *hex, int i)
