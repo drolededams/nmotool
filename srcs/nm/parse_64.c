@@ -6,11 +6,11 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:42:52 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/14 20:04:37 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:25:30 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_nm.h"
 
 void	parse_mach_o_64(t_data *data, uint32_t magic)
 {

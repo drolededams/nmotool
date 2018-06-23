@@ -6,11 +6,11 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/17 16:36:17 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 16:37:32 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:22:19 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_nm.h"
 
 int		search_x86_64(t_data *data, struct fat_arch *fa, uint32_t nfat_arch)
 {

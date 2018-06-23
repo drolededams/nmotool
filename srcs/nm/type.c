@@ -6,11 +6,11 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:20:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 18:44:34 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:28:00 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_nm.h"
 
 char	get_type_64(t_data *data, struct nlist_64 nl, char **sectnames)
 {

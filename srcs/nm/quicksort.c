@@ -6,11 +6,11 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:21:55 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 12:22:29 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:25:49 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_nm.h"
 
 void		quicksort_64(t_symbol_64 **stab, uint32_t first, uint32_t last)
 {

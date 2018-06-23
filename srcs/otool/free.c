@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc.c                                            :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/05 16:13:53 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/16 18:11:28 by dgameiro         ###   ########.fr       */
+/*   Created: 2018/04/17 18:18:45 by dgameiro          #+#    #+#             */
+/*   Updated: 2018/06/23 15:48:16 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_otool.h"
 
-t_symbol_64	**alloc_symbol_64(uint32_t nsyms)
+void	free_data(t_data *data)
 {
-	t_symbol_64	**table;
-	uint32_t	i;
-
-	if (!(table = (t_symbol_64**)malloc(sizeof(t_symbol_64*) * (nsyms + 1))))
-		return (NULL);
-	i = 0;
-	while (i < nsyms)
+	if (data)
 	{
-		if (!(table[i] = (t_symbol_64*)malloc(sizeof(t_symbol_64))))
-			return (NULL);
-		i++;
+		free_filename(data);
+		ft_memdel((void**)&data);
 	}
-	table[i] = NULL;
-	return (table);
+}
+
+void	free_filename(t_data *data)
+{
+	if (data->filename)
+		ft_memdel((void**)&data->filename);
 }

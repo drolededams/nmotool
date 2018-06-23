@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_process.c                                       :+:      :+:    :+:   */
+/*   ot_process.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 13:00:12 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/14 20:04:38 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:48:42 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_otool.h"
 
-void	nm_process(t_data *data)
+void	ot_process(t_data *data)
 {
 	if (is_static(data))
 		static_lib_process(data);
@@ -97,7 +97,7 @@ void	lib_process(t_data *data)
 		{
 			print_lib_name(data, len);
 			data->offset += len;
-			nm_process(data);
+			ot_process(data);
 			data->offset += filesize - len;
 		}
 		else

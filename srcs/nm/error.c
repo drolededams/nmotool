@@ -6,11 +6,11 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:55:30 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/17 18:44:34 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 15:22:09 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "../../inc/ft_nm.h"
 
 uint32_t		error_file(char *str, t_data *data, int fd)
 {
