@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 14:06:22 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/23 15:27:28 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 18:28:07 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,8 @@ t_data *data, uint32_t modsize)
 	{
 		if ((to_swap(lc->cmdsize, data) % modsize) != 0)
 			data->error = 2;
-		if (i != ncmds && !data->error && offset_check(data,
-		sizeof(struct load_command) + to_swap(lc->cmdsize, data)))
+		if (i != ncmds && !data->error && offset_check_sec(data,
+		sizeof(struct load_command), to_swap(lc->cmdsize, data)))
 		{
 			offset += to_swap(lc->cmdsize, data);
 			lc = (void*)lc + to_swap(lc->cmdsize, data);

@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 16:28:13 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/23 15:26:58 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 18:35:44 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ t_data *data)
 	while (i++ < ncmds && !data->error)
 	{
 		add_nsect_32(data, cur, offset);
-		if (i != ncmds && offset_check(data, offset +
-		to_swap(cur->cmdsize, data) + sizeof(struct load_command)))
+		if (i != ncmds && offset_check_sec(data, offset +
+		sizeof(struct load_command), to_swap(cur->cmdsize, data)))
 		{
 			offset += to_swap(cur->cmdsize, data);
 			cur = (void*)cur + to_swap(cur->cmdsize, data);
@@ -42,7 +42,7 @@ void	add_nsect_32(t_data *data, struct load_command *cur, uint32_t offset)
 
 	sc = NULL;
 	if (to_swap(cur->cmd, data) == LC_SEGMENT &&
-			offset_check(data, offset + sizeof(struct segment_command)))
+			offset_check_sec(data, offset, sizeof(struct segment_command)))
 	{
 		sc = (struct segment_command*)cur;
 		data->nsects += to_swap(sc->nsects, data);
@@ -82,8 +82,8 @@ void	search_seg_32(t_data *data, struct load_command *lc, uint32_t ncmds,
 			while (j++ < to_swap(((struct segment_command*)lc)->nsects,
 						data) && !data->error)
 			{
-				if (offset_check(data,
-							offset + sizeof(struct segment_command) + (j - 1) *
+				if (offset_check_sec(data, offset,
+							sizeof(struct segment_command) + (j - 1) *
 							sizeof(struct section)))
 					fill_sect_tab_32(lc, sectnames, j, k++);
 			}

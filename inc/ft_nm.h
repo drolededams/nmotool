@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/04/19 18:47:56 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/23 18:45:44 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 # define FT_NM_H
 # include "../libft/includes/libft.h"
 # include <stdint.h>
-# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
 # include <sys/mman.h>
 # include <sys/stat.h>
 # include <mach-o/loader.h>
@@ -101,6 +103,8 @@ int					header_lib_check(t_data *data);
 size_t				filename_lenght(t_data *data);
 size_t				get_filesize(t_data *data);
 int					offset_check(t_data *data, size_t size);
+int					offset_check_sec(t_data *data, uint32_t offset,
+		size_t size);
 void				parse_lib(t_data *data);
 void				parse_lib_64(t_data *data);
 int					put_error(t_data *data);

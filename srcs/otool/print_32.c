@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 15:12:33 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/23 15:49:55 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/06/27 13:07:35 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,12 +128,11 @@ void		print_32(t_data *data)
 
 	sec = (struct section*)data->sec;
 	offset = (data->libstatic || data->obj) ? 0 : to_swap(sec->offset, data);
-	offset_check(data, to_swap(sec->offset, data) + to_swap(sec->size, data));
+	offset_check_sec(data, offset, to_swap(sec->size, data));
 	if (data->fat && !data->libstatic && !data->error)
 		print_arch_32(data, sec, offset);
 	else if (data->multi && !data->fat && !data->libstatic && !data->error)
 	{
-		ft_putchar('\n');
 		ft_putstr(data->filename);
 		ft_putstr(":\n");
 		print_normal_32(data, sec, offset);
