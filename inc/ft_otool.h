@@ -6,17 +6,13 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/23 18:45:46 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/08/20 14:03:03 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_OTOOL_H
 # define FT_OTOOL_H
 # include "../libft/includes/libft.h"
-# include <stdint.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
 # include <sys/mman.h>
 # include <sys/stat.h>
 # include <mach-o/loader.h>
@@ -98,4 +94,6 @@ void			print_normal_32(t_data *data, struct section *sec,
 		uint32_t offset);
 void			print_normal_64(t_data *data, struct section_64 *sec,
 		uint32_t offset);
+void			print_arch_type(cpu_type_t cpu);
+void			print_arch_type_2(cpu_type_t cpu);
 #endif

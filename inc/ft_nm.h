@@ -6,17 +6,13 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/27 12:22:54 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/23 18:45:44 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/08/20 14:03:05 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_NM_H
 # define FT_NM_H
 # include "../libft/includes/libft.h"
-# include <stdint.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <fcntl.h>
 # include <sys/mman.h>
 # include <sys/stat.h>
 # include <mach-o/loader.h>
@@ -135,4 +131,6 @@ void				free_filename(t_data *data);
 void				free_sectnames(char **sectnames);
 void				free_stab(t_symbol_64 **stab);
 void				putendl_protect(char *name, t_data *data);
+void				print_arch_type(cpu_type_t cpu);
+void				print_arch_type_2(cpu_type_t cpu);
 #endif

@@ -6,7 +6,7 @@
 #    By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/05/12 15:32:27 by dgameiro          #+#    #+#              #
-#    Updated: 2018/06/23 15:59:37 by dgameiro         ###   ########.fr        #
+#    Updated: 2018/08/20 14:52:59 by dgameiro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,10 +17,10 @@ SRC_OT_PATH = srcs/otool
 
 SRC_NM = main.c error.c nm_process.c open.c parse_64.c symtab.c symtab_64.c \
 	alloc.c type.c quicksort.c print.c section.c section_64.c lib_ut.c swap.c \
-	fat_ut.c free.c
+	fat_ut.c free.c print_arch.c
 
 SRC_OT = main.c open.c ot_process.c parse.c print.c section.c free.c error.c \
-	  swap.c fat_ut.c lib_ut.c print_32.c
+	  swap.c fat_ut.c lib_ut.c print_32.c print_arch.c
 
 OBJ_PATH = objs
 OBJ_NM_PATH = objs/nm
@@ -47,6 +47,10 @@ SRC_O = $(addprefix $(SRC_OT_PATH)/,$(SRC_OT))
 OBJ_O = $(addprefix $(OBJ_OT_PATH)/,$(OBJ_OT))
 
 all: $(NM) $(OTOOL)
+
+nm_ex: $(NM)
+
+ot_ex: $(OTOOL)
 
 $(NM): $(OBJ_N)
 	@make -C libft

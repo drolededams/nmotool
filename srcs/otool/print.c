@@ -6,7 +6,7 @@
 /*   By: dgameiro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 15:12:33 by dgameiro          #+#    #+#             */
-/*   Updated: 2018/06/27 13:07:15 by dgameiro         ###   ########.fr       */
+/*   Updated: 2018/08/20 13:32:52 by dgameiro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,7 @@ void		print_arch(t_data *data, struct section_64 *sec, uint32_t offset)
 		ft_putstr(data->filename);
 		ft_putchar(' ');
 		ft_putstr("(architecture ");
-		if (cpu == CPU_TYPE_POWERPC)
-			ft_putendl("ppc):");
-		else if (cpu == CPU_TYPE_I386)
-			ft_putendl("i386):");
+		print_arch_type(cpu);
 		print_normal_64(data, sec, offset);
 	}
 	else
